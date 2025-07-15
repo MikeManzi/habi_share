@@ -54,34 +54,36 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Property management',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
+      backgroundColor: AppColors.inputBackground,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: AppBar(
+          backgroundColor: AppColors.inputBackground,
+          elevation: 0,
+          title: const Text(
+            'Property management',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications_none, color: Colors.black),
+              onPressed:
+                  () => setState(() => showNotifications = !showNotifications),
+            ),
+            IconButton(
+              icon: const Icon(Icons.menu, color: AppColors.primaryPurple),
+              onPressed: () {},
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Container(color: AppColors.inputBorder, height: 1),
           ),
         ),
-        actions: [
-          // Notification bell
-          IconButton(
-            icon: const Icon(
-              Icons.notifications_none,
-              color: AppColors.textPrimary,
-            ),
-            onPressed:
-                () => setState(() => showNotifications = !showNotifications),
-          ),
-          // Menu icon
-          IconButton(
-            icon: const Icon(Icons.menu, color: AppColors.textPrimary),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Stack(
         children: [
@@ -90,7 +92,7 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 8,
+                  vertical: 16,
                 ),
                 child: Row(
                   children: [
@@ -129,7 +131,7 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
                     ),
                     const SizedBox(width: 12),
                     // Filter button
-                    OutlinedButton(
+                    OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.textPrimary,
                         side: const BorderSide(color: AppColors.inputBorder),
@@ -143,11 +145,19 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
                         ),
                       ),
                       onPressed: () {},
-                      child: const Text('Filter'),
+                      icon: const Icon(
+                        Icons.filter_list,
+                        color: AppColors.primaryPurple,
+                      ),
+                      label: const Text(
+                        'Filter',
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(height: 8),
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(
@@ -157,7 +167,17 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
                   itemCount: properties.length,
                   itemBuilder: (context, index) {
                     final property = properties[index];
-                    return _PropertyCard(property: property);
+                    return Column(
+                      children: [
+                        _PropertyCard(property: property),
+                        if (index < properties.length - 1)
+                          const Divider(
+                            height: 32,
+                            thickness: 1,
+                            color: AppColors.inputBorder,
+                          ),
+                      ],
+                    );
                   },
                 ),
               ),
@@ -196,111 +216,163 @@ class _PropertyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.inputBackground,
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 0,
-      child: Column(
-        children: [
-          ListTile(
-            leading: CircleAvatar(
-              backgroundColor: AppColors.inputBorder,
-              radius: 24,
-              // TODO: Replace with property image if available
-              child: const Icon(Icons.home, color: AppColors.primaryPurple),
-            ),
-            title: Text(
-              property['name'] ?? '',
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Card(
+        color: AppColors.inputBackground,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(
+            color: AppColors.inputBorder,
+            width: 1,
+          ), // Add subtle border
+        ),
+        elevation: 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 0,
+              ),
+              leading:
+                  property['image'] != null && property['image']!.isNotEmpty
+                      ? CircleAvatar(
+                        backgroundImage: NetworkImage(property['image']!),
+                        radius: 24,
+                      )
+                      : CircleAvatar(
+                        backgroundColor: AppColors.inputBorder,
+                        radius: 24,
+                        child: const Icon(
+                          Icons.home,
+                          color: AppColors.primaryPurple,
+                        ),
+                      ),
+              title: Text(
+                property['name'] ?? '',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              subtitle: Text(
+                property['address'] ?? '',
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 13,
+                ),
+              ),
+              trailing: PopupMenuButton<String>(
+                icon: const Icon(Icons.more_horiz, color: AppColors.inputHint),
+                itemBuilder:
+                    (context) => [
+                      const PopupMenuItem(
+                        value: 'view',
+                        child: Text('View More'),
+                      ),
+                    ],
+                onSelected: (value) {
+                  // Handle actions here
+                },
               ),
             ),
-            subtitle: Text(
-              property['address'] ?? '',
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.phone,
+                        size: 16,
+                        color: AppColors.inputHint,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        property['phone'] ?? '',
+                        style: const TextStyle(
+                          color: AppColors.inputText,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.email,
+                        size: 16,
+                        color: AppColors.inputHint,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        property['email'] ?? '',
+                        style: const TextStyle(
+                          color: AppColors.inputText,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            trailing: PopupMenuButton<String>(
-              icon: const Icon(Icons.more_horiz, color: AppColors.inputHint),
-              itemBuilder:
-                  (context) => [
-                    const PopupMenuItem(
-                      value: 'view',
-                      child: Text('View More'),
-                    ),
-                  ],
-              onSelected: (value) {
-                // Handle actions here
-              },
+            // Divider between contact info and info row
+            const Divider(
+              height: 1,
+              thickness: 1,
+              color: AppColors.inputBorder,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.phone,
-                      size: 16,
-                      color: AppColors.inputHint,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      property['phone'] ?? '',
-                      style: const TextStyle(
-                        color: AppColors.inputText,
-                        fontSize: 13,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: _InfoColumn(
+                        label: 'Size',
+                        value: property['size'] ?? '',
+                        bold: true,
+                        large: true,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.email,
-                      size: 16,
-                      color: AppColors.inputHint,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      property['email'] ?? '',
-                      style: const TextStyle(
-                        color: AppColors.inputText,
-                        fontSize: 13,
+                  ),
+                  Container(width: 1, height: 32, color: AppColors.inputBorder),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: _InfoColumn(
+                        label: 'Number of rooms',
+                        value: property['rooms'] ?? '',
+                        bold: false,
+                        large: true,
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  Container(width: 1, height: 32, color: AppColors.inputBorder),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: _InfoColumn(
+                        label: 'Last activity',
+                        value: property['lastActivity'] ?? '',
+                        bold: true,
+                        large: false,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Divider(height: 20, thickness: 1, color: AppColors.inputBorder),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _InfoColumn(label: 'Size', value: property['size'] ?? ''),
-                _InfoColumn(
-                  label: 'Number of rooms',
-                  value: property['rooms'] ?? '',
-                ),
-                _InfoColumn(
-                  label: 'Last activity',
-                  value: property['lastActivity'] ?? '',
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -310,7 +382,14 @@ class _PropertyCard extends StatelessWidget {
 class _InfoColumn extends StatelessWidget {
   final String label;
   final String value;
-  const _InfoColumn({required this.label, required this.value});
+  final bool bold;
+  final bool large;
+  const _InfoColumn({
+    required this.label,
+    required this.value,
+    this.bold = false,
+    this.large = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -324,10 +403,10 @@ class _InfoColumn extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.inputText,
-            fontWeight: FontWeight.w600,
-            fontSize: 13,
+            fontWeight: bold ? FontWeight.bold : FontWeight.w600,
+            fontSize: large ? 15 : 13,
           ),
         ),
       ],
