@@ -1,15 +1,17 @@
+// login_screen.dart
 import 'package:flutter/material.dart';
+import 'package:habi_share/screens/signup.dart';
 import 'package:habi_share/widgets/text_field.dart';
 import '../widgets/custom_button.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<Login> createState() => _LoginState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final _telephoneController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -49,12 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleRegister() {
-    // Navigate to register screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Navigate to Register Screen'),
-        backgroundColor: Colors.blue,
-      ),
+    // Navigate to signup page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Signup()),
     );
   }
 
@@ -62,9 +62,24 @@ class _LoginScreenState extends State<LoginScreen> {
     if (value == null || value.isEmpty) {
       return 'Please enter your telephone number';
     }
-    if (value.length < 10) {
+
+    // Remove any spaces, dashes, or parentheses
+    String cleanedValue = value.replaceAll(RegExp(r'[\s\-\(\)]'), '');
+
+    // Check if it contains only digits after cleaning
+    if (!RegExp(r'^[0-9]+$').hasMatch(cleanedValue)) {
       return 'Please enter a valid telephone number';
     }
+
+    // Check length (adjust based on your country's phone number format)
+    if (cleanedValue.length < 10) {
+      return 'Telephone number must be at least 10 digits';
+    }
+
+    if (cleanedValue.length > 15) {
+      return 'Telephone number cannot exceed 15 digits';
+    }
+
     return null;
   }
 
@@ -72,9 +87,20 @@ class _LoginScreenState extends State<LoginScreen> {
     if (value == null || value.isEmpty) {
       return 'Please enter your password';
     }
+
     if (value.length < 6) {
       return 'Password must be at least 6 characters';
     }
+
+    if (value.length > 50) {
+      return 'Password cannot exceed 50 characters';
+    }
+
+    // Optional: Add more password strength requirements
+    // if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
+    //   return 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+    // }
+
     return null;
   }
 
@@ -167,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 40),
 
-                    // Register link
+                    // Register link - UPDATED TO NAVIGATE TO SIGNUP
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -176,11 +202,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                         GestureDetector(
-                          onTap: _handleRegister,
+                          onTap:
+                              _handleRegister, // This now navigates to signup
                           child: const Text(
                             'Register',
                             style: TextStyle(
-                              color: const Color(0xFF8A2851),
+                              color: Color(0xFF8A2851),
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
@@ -191,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 40),
 
-                    // Telephone input
+                    // Telephone input - ENHANCED VALIDATION
                     CustomTextField(
                       hintText: 'Telephone',
                       controller: _telephoneController,
@@ -200,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: const Icon(Icons.phone, color: Colors.grey),
                     ),
 
-                    // Password input
+                    // Password input - ENHANCED VALIDATION
                     CustomTextField(
                       hintText: 'Password',
                       controller: _passwordController,
