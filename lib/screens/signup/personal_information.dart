@@ -283,7 +283,6 @@ class _PersonalInformationState extends State<PersonalInformation> {
                             onPressed: _handlePersonalInformation,
                             isLoading: _isLoading,
                             backgroundColor: const Color(0xFF8A2851),
-                            borderRadius: 10,
                           ),
 
                           const SizedBox(height: 20),

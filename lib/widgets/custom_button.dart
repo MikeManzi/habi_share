@@ -21,7 +21,7 @@ class CustomButton extends StatelessWidget {
     this.height,
     this.fontSize,
     this.isLoading = false,
-    this.borderRadius = 25,
+    this.borderRadius = 12,
   });
 
   @override

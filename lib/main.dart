@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habi_share/screens/login.dart';
+import 'package:habi_share/screens/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Login(),
+      home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

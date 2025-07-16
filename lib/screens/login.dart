@@ -256,7 +256,6 @@ class _LoginState extends State<Login> {
                       onPressed: _handleLogin,
                       isLoading: _isLoading,
                       backgroundColor: const Color(0xFF8A2851),
-                      borderRadius: 10,
                     ),
 
                     const SizedBox(height: 40),

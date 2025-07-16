@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habi_share/screens/registration_success.dart';
+import 'package:habi_share/screens/success_dialog.dart';
 import 'package:habi_share/widgets/custom_button.dart';
 import 'package:habi_share/widgets/text_field.dart';
 
@@ -130,7 +130,7 @@ class _AccountInformationState extends State<AccountInformation> {
         // Navigate to success page
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const RegistrationSuccess()),
+          MaterialPageRoute(builder: (context) => const SuccessDialog()),
         );
       }
     }
@@ -183,7 +183,6 @@ class _AccountInformationState extends State<AccountInformation> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Icon(
                           Icons.apps,
