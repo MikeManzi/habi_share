@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habi_share/screens/registration_success.dart';
 import 'package:habi_share/widgets/custom_button.dart';
 import 'package:habi_share/widgets/text_field.dart';
 
@@ -27,7 +28,7 @@ class _AccountInformationState extends State<AccountInformation> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  String _selectedGender = 'Female';
+  String _selectedGender = 'Male';
   bool _acceptTerms = false;
   bool _isLoading = false;
   bool _showPassword = false;
@@ -126,15 +127,11 @@ class _AccountInformationState extends State<AccountInformation> {
 
       // Handle registration logic here
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration completed successfully!'),
-            backgroundColor: Colors.green,
-          ),
+        // Navigate to success page
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const RegistrationSuccess()),
         );
-
-        // Navigate to login or home page
-        Navigator.of(context).popUntil((route) => route.isFirst);
       }
     }
   }
