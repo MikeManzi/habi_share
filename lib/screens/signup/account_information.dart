@@ -27,7 +27,7 @@ class _AccountInformationState extends State<AccountInformation> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  String _selectedGender = 'Male';
+  String _selectedGender = 'Female';
   bool _acceptTerms = false;
   bool _isLoading = false;
   bool _showPassword = false;

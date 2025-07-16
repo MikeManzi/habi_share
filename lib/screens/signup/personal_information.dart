@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:habi_share/screens/signup/account_information.dart';
 import 'package:habi_share/widgets/custom_button.dart';
 import 'package:habi_share/widgets/text_field.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class PersonalInformation extends StatefulWidget {
+  const PersonalInformation({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<PersonalInformation> createState() => _PersonalInformationState();
 }
 
-class _SignupState extends State<Signup> {
+class _PersonalInformationState extends State<PersonalInformation> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -87,7 +88,7 @@ class _SignupState extends State<Signup> {
     return null;
   }
 
-  void _handleSignup() async {
+  void _handlePersonalInformation() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -100,17 +101,20 @@ class _SignupState extends State<Signup> {
         _isLoading = false;
       });
 
-      // Handle signup logic here
+      // Navigate to Account Information page
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Account created successfully!'),
-            backgroundColor: Colors.green,
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => AccountInformation(
+                  firstName: _firstNameController.text,
+                  lastName: _lastNameController.text,
+                  telephone: _telephoneController.text,
+                  email: _emailController.text,
+                ),
           ),
         );
-
-        // Navigate back to login after successful signup
-        Navigator.pop(context);
       }
     }
   }
@@ -276,7 +280,7 @@ class _SignupState extends State<Signup> {
 
                           CustomButton(
                             text: 'Next',
-                            onPressed: _handleSignup,
+                            onPressed: _handlePersonalInformation,
                             isLoading: _isLoading,
                             backgroundColor: const Color(0xFF8A2851),
                             borderRadius: 10,

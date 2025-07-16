@@ -1,6 +1,5 @@
-// login_screen.dart
 import 'package:flutter/material.dart';
-import 'package:habi_share/screens/signup.dart';
+import 'package:habi_share/screens/signup/personal_information.dart';
 import 'package:habi_share/widgets/text_field.dart';
 import '../widgets/custom_button.dart';
 
@@ -54,7 +53,7 @@ class _LoginState extends State<Login> {
     // Navigate to signup page
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const Signup()),
+      MaterialPageRoute(builder: (context) => const PersonalInformation()),
     );
   }
 
