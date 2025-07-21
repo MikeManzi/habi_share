@@ -62,7 +62,6 @@ class NotificationPopover extends StatelessWidget {
                     CircleAvatar(
                       backgroundColor: AppColors.primaryPurple,
                       radius: 18,
-                      // TODO: Replace with avatar image if available
                       child: const Icon(
                         Icons.person,
                         color: AppColors.buttonText,

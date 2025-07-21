@@ -15,7 +15,7 @@ class PropertyCard extends StatelessWidget {
         color: AppColors.inputBackground,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(6),
           side: const BorderSide(color: AppColors.inputBorder, width: 1),
         ),
         elevation: 0,
@@ -116,46 +116,63 @@ class PropertyCard extends StatelessWidget {
               thickness: 1,
               color: AppColors.inputBorder,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: InfoColumn(
-                        label: 'Size',
-                        value: property.size,
-                        bold: true,
-                        large: true,
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(6),
+                bottomRight: Radius.circular(6),
+              ),
+              child: Container(
+                color: const Color(0xFFD9D9D9),
+                height: 52,
+                width: double.infinity,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: InfoColumn(
+                          label: 'Size',
+                          value: property.size,
+                          bold: true,
+                          large: true,
+                        ),
                       ),
                     ),
-                  ),
-                  Container(width: 1, height: 32, color: AppColors.inputBorder),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: InfoColumn(
-                        label: 'Number of rooms',
-                        value: property.rooms,
-                        bold: false,
-                        large: true,
+                    Container(
+                      width: 1,
+                      height: double.infinity,
+                      color: AppColors.inputBorder,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: InfoColumn(
+                          label: 'Number of rooms',
+                          value: property.rooms,
+                          bold: false,
+                          large: true,
+                        ),
                       ),
                     ),
-                  ),
-                  Container(width: 1, height: 32, color: AppColors.inputBorder),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: InfoColumn(
-                        label: 'Last activity',
-                        value: property.lastActivity,
-                        bold: true,
-                        large: false,
+                    Container(
+                      width: 1,
+                      height: double.infinity,
+                      color: AppColors.inputBorder,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: InfoColumn(
+                          label: 'Last activity',
+                          value: property.lastActivity,
+                          bold: true,
+                          large: false,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

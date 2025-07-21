@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
+import '../models/property.dart';
+import '../models/notification.dart';
+import '../widgets/property_card.dart';
+import '../widgets/notification_popover.dart';
 
-/// LandlordLandingPage displays the property management dashboard for landlords.
-/// This widget is modular and ready for integration into a role-based navigation system.
 class LandlordLandingPage extends StatefulWidget {
-  const LandlordLandingPage({Key? key}) : super(key: key);
+  const LandlordLandingPage({super.key});
 
   @override
   State<LandlordLandingPage> createState() => _LandlordLandingPageState();
@@ -14,47 +16,61 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
   bool showNotifications = false;
 
   // Dummy data for properties and notifications
-  final List<Map<String, String>> properties = [
-    {
-      'name': 'Green Apartments',
-      'address': 'Kg 99 st, Kigali-Rwanda',
-      'phone': '+250789999999',
-      'email': 'someone@example.com',
-      'size': '1234 sqm',
-      'rooms': '4',
-      'lastActivity': '12/03/24',
-      'image': '', // Placeholder for image asset or network
-    },
-    {
-      'name': 'Oasis Apartments',
-      'address': 'Kg 420 st, Kigali-Rwanda',
-      'phone': '+250789999999',
-      'email': 'someone@example.com',
-      'size': '1234 sqm',
-      'rooms': '4',
-      'lastActivity': '12/03/24',
-      'image': '',
-    },
+  final List<Property> properties = [
+    Property(
+      name: 'Green Apartments',
+      address: 'Kg 99 st, Kigali-Rwanda',
+      phone: '+250789999999',
+      email: 'someone@example.com',
+      size: '1234 sqm',
+      rooms: '4',
+      lastActivity: '12/03/24',
+      image: '',
+    ),
+    Property(
+      name: 'Oasis Apartments',
+      address: 'Kg 420 st, Kigali-Rwanda',
+      phone: '+250789999999',
+      email: 'someone@example.com',
+      size: '1234 sqm',
+      rooms: '4',
+      lastActivity: '12/03/24',
+      image: '',
+    ),
+    Property(
+      name: 'Oasis Apartments',
+      address: 'Kg 420 st, Kigali-Rwanda',
+      phone: '+250789999999',
+      email: 'someone@example.com',
+      size: '1234 sqm',
+      rooms: '4',
+      lastActivity: '12/03/24',
+      image: '',
+    ),
   ];
 
-  final List<Map<String, String>> notifications = [
-    {
-      'avatar': '', // Placeholder for avatar
-      'message': 'Jane Doe added a review.',
-      'time': '12:03 AM',
-    },
-    {
-      'avatar': '',
-      'message': 'Your listing with ID-1211 has been approved',
-      'time': '12:03 AM',
-    },
-    {'avatar': '', 'message': 'Jane Doe added a review.', 'time': '12:03 AM'},
+  final List<NotificationModel> notifications = [
+    NotificationModel(
+      avatar: '',
+      message: 'Jane Doe added a review.',
+      time: '12:03 AM',
+    ),
+    NotificationModel(
+      avatar: '',
+      message: 'Your listing with ID-1211 has been approved',
+      time: '12:03 AM',
+    ),
+    NotificationModel(
+      avatar: '',
+      message: 'Jane Doe added a review.',
+      time: '12:03 AM',
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.inputBackground,
+      backgroundColor: const Color(0xFFF8F4ED),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: AppBar(
@@ -169,7 +185,7 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
                     final property = properties[index];
                     return Column(
                       children: [
-                        _PropertyCard(property: property),
+                        PropertyCard(property: property),
                         if (index < properties.length - 1)
                           const Divider(
                             height: 32,
@@ -188,328 +204,19 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
             Positioned.fill(
               child: GestureDetector(
                 onTap: () => setState(() => showNotifications = false),
-                child: Container(
-                  color:
-                      AppColors.backgroundOverlay, // semi-transparent overlay
-                ),
+                child: Container(color: AppColors.backgroundOverlay),
               ),
             ),
             Positioned(
               top: kToolbarHeight + 16,
               right: 16,
-              child: _NotificationPopover(
+              child: NotificationPopover(
                 notifications: notifications,
                 onMarkAllRead: () {},
               ),
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-/// Widget for a single property card as per the design.
-class _PropertyCard extends StatelessWidget {
-  final Map<String, String> property;
-  const _PropertyCard({required this.property});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Card(
-        color: AppColors.inputBackground,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(
-            color: AppColors.inputBorder,
-            width: 1,
-          ), // Add subtle border
-        ),
-        elevation: 0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 0,
-              ),
-              leading:
-                  property['image'] != null && property['image']!.isNotEmpty
-                      ? CircleAvatar(
-                        backgroundImage: NetworkImage(property['image']!),
-                        radius: 24,
-                      )
-                      : CircleAvatar(
-                        backgroundColor: AppColors.inputBorder,
-                        radius: 24,
-                        child: const Icon(
-                          Icons.home,
-                          color: AppColors.primaryPurple,
-                        ),
-                      ),
-              title: Text(
-                property['name'] ?? '',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              subtitle: Text(
-                property['address'] ?? '',
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 13,
-                ),
-              ),
-              trailing: PopupMenuButton<String>(
-                icon: const Icon(Icons.more_horiz, color: AppColors.inputHint),
-                itemBuilder:
-                    (context) => [
-                      const PopupMenuItem(
-                        value: 'view',
-                        child: Text('View More'),
-                      ),
-                    ],
-                onSelected: (value) {
-                  // Handle actions here
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.phone,
-                        size: 16,
-                        color: AppColors.inputHint,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        property['phone'] ?? '',
-                        style: const TextStyle(
-                          color: AppColors.inputText,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.email,
-                        size: 16,
-                        color: AppColors.inputHint,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        property['email'] ?? '',
-                        style: const TextStyle(
-                          color: AppColors.inputText,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            // Divider between contact info and info row
-            const Divider(
-              height: 1,
-              thickness: 1,
-              color: AppColors.inputBorder,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: _InfoColumn(
-                        label: 'Size',
-                        value: property['size'] ?? '',
-                        bold: true,
-                        large: true,
-                      ),
-                    ),
-                  ),
-                  Container(width: 1, height: 32, color: AppColors.inputBorder),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: _InfoColumn(
-                        label: 'Number of rooms',
-                        value: property['rooms'] ?? '',
-                        bold: false,
-                        large: true,
-                      ),
-                    ),
-                  ),
-                  Container(width: 1, height: 32, color: AppColors.inputBorder),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: _InfoColumn(
-                        label: 'Last activity',
-                        value: property['lastActivity'] ?? '',
-                        bold: true,
-                        large: false,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Helper widget for info columns in the property card.
-class _InfoColumn extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool bold;
-  final bool large;
-  const _InfoColumn({
-    required this.label,
-    required this.value,
-    this.bold = false,
-    this.large = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(color: AppColors.inputHint, fontSize: 12),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: TextStyle(
-            color: AppColors.inputText,
-            fontWeight: bold ? FontWeight.bold : FontWeight.w600,
-            fontSize: large ? 15 : 13,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Notification popover widget as per the design.
-class _NotificationPopover extends StatelessWidget {
-  final List<Map<String, String>> notifications;
-  final VoidCallback onMarkAllRead;
-  const _NotificationPopover({
-    required this.notifications,
-    required this.onMarkAllRead,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        width: 320,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.inputBackground,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Your notifications',
-                  style: TextStyle(
-                    color: AppColors.inputText,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-                TextButton(
-                  onPressed: onMarkAllRead,
-                  child: const Text(
-                    'Mark all as read',
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            ...notifications.map(
-              (notif) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: AppColors.primaryPurple,
-                      radius: 18,
-                      // TODO: Replace with avatar image if available
-                      child: const Icon(
-                        Icons.person,
-                        color: AppColors.buttonText,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            notif['message'] ?? '',
-                            style: const TextStyle(
-                              color: AppColors.inputText,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            notif['time'] ?? '',
-                            style: const TextStyle(
-                              color: AppColors.inputHint,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
