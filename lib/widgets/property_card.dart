@@ -12,7 +12,7 @@ class PropertyCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.10),
@@ -26,8 +26,8 @@ class PropertyCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
+              topLeft: Radius.circular(6),
+              topRight: Radius.circular(6),
             ),
             child: Image.asset(
               property.imagePath,
