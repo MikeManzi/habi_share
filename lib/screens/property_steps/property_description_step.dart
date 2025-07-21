@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../providers/property_provider.dart';
 import '../../components/reusable_components.dart';
-import '../../utils/app_colors.dart';
+import '../../utils/image_utils.dart';
 
 class PropertyDescriptionStep extends StatefulWidget {
   final VoidCallback onNext;
@@ -22,7 +22,7 @@ class _PropertyDescriptionStepState extends State<PropertyDescriptionStep> {
   void initState() {
     super.initState();
     final provider = Provider.of<PropertyProvider>(context, listen: false);
-    _descriptionController.text = provider.property.description ?? '';
+    _descriptionController.text = provider.property.description;
   }
 
   @override
@@ -88,7 +88,8 @@ class _PropertyDescriptionStepState extends State<PropertyDescriptionStep> {
         }
 
         if (image != null) {
-          provider.addImage(image.name);
+          // Store the full path instead of just the name
+          provider.addImage(image.path);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Image added successfully')),
@@ -162,41 +163,59 @@ class _PropertyDescriptionStepState extends State<PropertyDescriptionStep> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                if (provider.property.images.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 2,
-                                    ),
+                                ...provider.property.images.map((imagePath) {
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(vertical: 4),
                                     child: Row(
                                       children: [
-                                        const Icon(
-                                          Icons.image,
-                                          color: Colors.white,
-                                          size: 16,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            provider.property.images[0],
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                            ),
+                                        // Image preview
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(8),
+                                          child: ImageUtils.buildImageWidget(
+                                            imagePath: imagePath,
+                                            width: 60,
+                                            height: 60,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                        IconButton(
-                                          onPressed:
-                                              () => provider.removeImage(
-                                                provider.property.images[0],
+                                        const SizedBox(width: 12),
+                                        // File name
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Image ${provider.property.images.indexOf(imagePath) + 1}',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
+                                              Text(
+                                                imagePath.split('/').last,
+                                                style: const TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 12,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        // Delete button
+                                        IconButton(
+                                          onPressed: () => provider.removeImage(imagePath),
                                           icon: const Icon(
                                             Icons.delete,
                                             color: Colors.white,
-                                            size: 16,
+                                            size: 20,
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
+                                  );
+                                }).toList(),
                               ],
                             ),
                           );

@@ -124,6 +124,27 @@ class PropertyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Updated image handling to support multiple images
+  void addImage(String imagePath) {
+    final currentImages = List<String>.from(_property.images);
+    currentImages.add(imagePath);
+    _property = _property.copyWith(images: currentImages);
+    notifyListeners();
+  }
+
+  void removeImage(String imagePath) {
+    final currentImages = List<String>.from(_property.images);
+    currentImages.remove(imagePath);
+    _property = _property.copyWith(images: currentImages);
+    notifyListeners();
+  }
+
+  // For backward compatibility - replaces all images with single image
+  void updateSingleImage(String imagePath) {
+    _property = _property.copyWith(images: imagePath.isEmpty ? [] : [imagePath]);
+    notifyListeners();
+  }
+
   void addDocument(String documentPath) {
     final currentDocuments = List<String>.from(_property.documents);
     currentDocuments.add(documentPath);
@@ -136,15 +157,6 @@ class PropertyProvider extends ChangeNotifier {
     currentDocuments.remove(documentPath);
     _property = _property.copyWith(documents: currentDocuments);
     notifyListeners();
-  }
-
-  // For backward compatibility with image handling
-  void addImage(String imagePath) {
-    updateImage(imagePath);
-  }
-
-  void removeImage(String imagePath) {
-    updateImage('');
   }
 
   // Submit property to Firebase
@@ -207,7 +219,7 @@ class PropertyProvider extends ChangeNotifier {
       if (property == null) {
         throw Exception('Property not found');
       }
-      if (property != null && property.images.isEmpty) {
+      if (property.images.isEmpty) {
         property.images.add('assets/default_property.png');
       }
       return property;
@@ -220,26 +232,37 @@ class PropertyProvider extends ChangeNotifier {
   // Delete property
   Future<bool> deleteProperty(String propertyId) async {
     try {
+      print('PropertyProvider: Starting property deletion for ID: $propertyId');
       _isLoading = true;
       _error = null;
       notifyListeners();
 
       // Delete from Firebase
       await _propertyService.deleteProperty(propertyId);
+      print('PropertyProvider: Property deleted from Firebase successfully');
 
       // Remove from local lists if present
+      final initialAllCount = _allProperties.length;
+      final initialFilteredCount = _filteredProperties.length;
+      
       _allProperties.removeWhere((p) => p.id == propertyId);
       _filteredProperties.removeWhere((p) => p.id == propertyId);
-
-      print('PropertyProvider: Property deleted successfully');
+      
+      final finalAllCount = _allProperties.length;
+      final finalFilteredCount = _filteredProperties.length;
+      
+      print('PropertyProvider: Removed from local lists - All: ${initialAllCount - finalAllCount}, Filtered: ${initialFilteredCount - finalFilteredCount}');
+      print('PropertyProvider: Property deletion completed successfully');
+      
       return true;
     } catch (e) {
       _error = 'Error deleting property: ${e.toString()}';
-      print(_error);
+      print('PropertyProvider: $_error');
       return false;
     } finally {
       _isLoading = false;
       notifyListeners();
+      print('PropertyProvider: Delete operation finished, loading state reset');
     }
   }
 

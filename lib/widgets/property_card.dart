@@ -5,6 +5,7 @@ import 'package:habi_share/providers/property_provider.dart';
 import '../models/property.dart';
 import '../utils/app_colors.dart';
 import '../utils/date_utils.dart';
+import '../utils/image_utils.dart';
 import 'info_column.dart';
 
 class PropertyCard extends StatelessWidget {
@@ -84,20 +85,25 @@ class PropertyCard extends StatelessWidget {
   }
 
   void _deleteProperty(BuildContext context) async {
-    Navigator.of(context).pop(); // Close the dialog
+    // Close the confirmation dialog first
+    Navigator.of(context).pop();
 
-    // Show loading indicator
+    // Show loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const AlertDialog(
-          content: Row(
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(width: 16),
-              Text('Deleting property...'),
-            ],
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: const AlertDialog(
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 16),
+                Expanded(child: Text('Deleting property...')),
+              ],
+            ),
           ),
         );
       },
@@ -107,46 +113,105 @@ class PropertyCard extends StatelessWidget {
       final propertyProvider = Provider.of<PropertyProvider>(context, listen: false);
       final success = await propertyProvider.deleteProperty(property.id);
 
-      // Close loading dialog
-      Navigator.of(context).pop();
+      // Always close the loading dialog first
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
 
       if (success) {
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Property "${property.name}" deleted successfully'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-
-        // Call the onDeleted callback if provided
-        onDeleted?.call();
+        // Show success dialog with navigation option
+        _showSuccessDialog(context);
       } else {
         // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              propertyProvider.error ?? 'Failed to delete property',
-            ),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
+        _showErrorMessage(
+          context,
+          propertyProvider.error ?? 'Failed to delete property',
         );
       }
     } catch (e) {
-      // Close loading dialog
-      Navigator.of(context).pop();
+      // Always close the loading dialog first
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
 
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error deleting property: ${e.toString()}'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 5),
-        ),
-      );
+      _showErrorMessage(context, 'Error deleting property: ${e.toString()}');
     }
+  }
+
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: const Icon(
+            Icons.check_circle,
+            color: Colors.green,
+            size: 48,
+          ),
+          title: const Text('Property Deleted'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Property "${property.name}" has been deleted successfully.'),
+              const SizedBox(height: 16),
+              const Text(
+                'The property has been removed from your listings.',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close success dialog
+                // Call the onDeleted callback to refresh the list
+                onDeleted?.call();
+              },
+              child: const Text('Stay Here'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close success dialog
+                // Navigate back to dashboard (pop until we reach the dashboard)
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                // Call the onDeleted callback to refresh the list
+                onDeleted?.call();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Back to Dashboard'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorMessage(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          icon: const Icon(
+            Icons.error,
+            color: Colors.red,
+            size: 48,
+          ),
+          title: const Text('Delete Failed'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -183,7 +248,7 @@ class PropertyCard extends StatelessWidget {
                 leading:
                     property.images.isNotEmpty
                         ? CircleAvatar(
-                          backgroundImage: NetworkImage(property.images[0]),
+                          backgroundImage: ImageUtils.getImageProvider(property.images[0]),
                           radius: 24,
                         )
                         : CircleAvatar(
