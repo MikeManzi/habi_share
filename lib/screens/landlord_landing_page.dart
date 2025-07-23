@@ -161,13 +161,9 @@ class _LandlordLandingPageState extends State<LandlordLandingPage> {
                         ),
                       ),
                       onPressed: () {},
-                      icon: const Icon(
-                        Icons.filter_list,
-                        color: AppColors.primaryPurple,
-                      ),
                       label: const Text(
-                        'Filter',
-                        style: TextStyle(color: Colors.black),
+                        'Add property',
+                        style: TextStyle(color: AppColors.primaryPurple),
                       ),
                     ),
                   ],
