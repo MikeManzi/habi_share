@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/client_property.dart';
-import 'client_property_card.dart';
+import '../models/property.dart';
+import 'property_card.dart';
 
-class ClientPropertyGrid extends StatelessWidget {
-  final List<ClientProperty> properties;
-  const ClientPropertyGrid({Key? key, required this.properties}) : super(key: key);
+class PropertyGrid extends StatelessWidget {
+  final List<Property> properties;
+  const PropertyGrid({Key? key, required this.properties}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class ClientPropertyGrid extends StatelessWidget {
       childAspectRatio: 1.1,
       children:
           properties
-              .map((property) => ClientPropertyCard(property: property))
+              .map((property) => PropertyCard(property: property))
               .toList(),
     );
   }

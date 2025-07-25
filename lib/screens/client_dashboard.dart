@@ -13,13 +13,13 @@ class ClientDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Sample property data
     final featuredProperties = [
-      Property(
+      ClientProperty(
         imagePath: 'assets/apartment.png',
         price: '320,000 Rwf',
         address: 'KK 62 st, Kabeza',
         isLarge: true,
       ),
-      Property(
+      ClientProperty(
         imagePath: 'assets/apartment.png',
         price: '230,000 Rwf',
         address: 'KK 62 st, Kabeza',
@@ -28,7 +28,7 @@ class ClientDashboardScreen extends StatelessWidget {
     ];
     final sharedHousing = List.generate(
       4,
-      (_) => Property(
+      (_) => ClientProperty(
         imagePath: 'assets/apartment.png',
         price: '320,000 Rwf',
         address: 'KK 62 st, Kabeza',
@@ -36,7 +36,7 @@ class ClientDashboardScreen extends StatelessWidget {
     );
     final forSale = List.generate(
       4,
-      (_) => Property(
+      (_) => ClientProperty(
         imagePath: 'assets/apartment.png',
         price: '320,000 Rwf',
         address: 'KK 62 st, Kabeza',
@@ -115,7 +115,7 @@ class ClientDashboardScreen extends StatelessWidget {
                             (property) => Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 12.0),
-                                child: PropertyCard(property: property),
+                                child: ClientPropertyCard(property: property),
                               ),
                             ),
                           )
@@ -134,7 +134,7 @@ class ClientDashboardScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                PropertyGrid(properties: sharedHousing),
+                ClientPropertyGrid(properties: sharedHousing),
                 const SizedBox(height: 28),
                 // For sale section
                 Padding(
@@ -148,7 +148,7 @@ class ClientDashboardScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                PropertyGrid(properties: forSale),
+                ClientPropertyGrid(properties: forSale),
                 const SizedBox(height: 32),
               ],
             ),
