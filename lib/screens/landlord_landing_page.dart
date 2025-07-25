@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
-import '../models/property.dart';
+import '../models/client_property.dart';
 import '../models/notification.dart';
-import '../widgets/property_card.dart';
+import '../widgets/client_property_card.dart';
 import '../widgets/notification_popover.dart';
 
 class LandlordLandingPage extends StatefulWidget {
