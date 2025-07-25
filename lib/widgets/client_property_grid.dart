@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/property.dart';
-import 'property_card.dart';
+import '../models/client_property.dart';
+import 'client_property_card.dart';
 
 class PropertyGrid extends StatelessWidget {
   final List<Property> properties;

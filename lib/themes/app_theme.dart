@@ -232,7 +232,7 @@ class AppTheme {
       iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 24),
 
       // Card Theme
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.backgroundCard,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

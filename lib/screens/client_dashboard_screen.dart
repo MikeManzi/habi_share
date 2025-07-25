@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
-import '../widgets/property_card.dart';
-import '../widgets/property_grid.dart';
+import '../widgets/client_property_card.dart';
+import '../widgets/client_property_grid.dart';
 import '../widgets/filter_chip.dart';
 import '../widgets/search_bar.dart' as custom_widgets;
-import '../models/property.dart';
+import '../models/client_property.dart';
 
 class ClientDashboardScreen extends StatelessWidget {
   const ClientDashboardScreen({Key? key}) : super(key: key);
