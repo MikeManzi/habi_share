@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
-import '../models/client_property.dart';
+import '../models/property.dart';
 import '../models/notification.dart';
-import '../widgets/client_property_card.dart';
+import '../widgets/property_card.dart';
 import '../widgets/notification_popover.dart';
 
-class LandlordLandingPage extends StatefulWidget {
-  const LandlordLandingPage({super.key});
+class LandlordDashboard extends StatefulWidget {
+  const LandlordDashboard({super.key});
 
   @override
-  State<LandlordLandingPage> createState() => _LandlordLandingPageState();
+  State<LandlordDashboard> createState() => _LandlordDashboardState();
 }
 
-class _LandlordLandingPageState extends State<LandlordLandingPage> {
+class _LandlordDashboardState extends State<LandlordDashboard> {
   bool showNotifications = false;
 
   // Dummy data for properties and notifications

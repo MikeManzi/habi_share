@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habi_share/screens/signup/personal_information.dart';
 import 'package:habi_share/widgets/text_field.dart';
 import '../widgets/custom_button.dart';
+import 'package:habi_share/screens/landlord_dashboard.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -44,6 +45,10 @@ class _LoginState extends State<Login> {
             content: Text('Login successful!'),
             backgroundColor: Colors.green,
           ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LandlordDashboard()),
         );
       }
     }
