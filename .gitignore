@@ -29,6 +29,7 @@ migrate_working_dir/
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
 /build/
@@ -43,3 +44,91 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase
+firebase_options.dart
+google-services.json
+GoogleService-Info.plist
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Firebase Functions
+functions/node_modules/
+functions/npm-debug.log
+functions/.env
+functions/.env.local
+functions/.env.production
+
+# Firebase Hosting
+dist/
+
+# Service Account Keys (NEVER commit these)
+**/serviceAccountKey.json
+**/service-account-*.json
+**/*-firebase-adminsdk-*.json
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+
+# API Keys and Secrets
+**/secrets.dart
+**/api_keys.dart
+**/config.dart
+
+# Platform-specific ignores
+# iOS
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Android
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+*.jks
+*.keystore
+
+# Web
+lib/generated_plugin_registrant.dart
+
+# Coverage
+coverage/
+
+# Exceptions to above rules
+!**/ios/**/default.mode1v3
+!**/ios/**/default.mode2v3
+!**/ios/**/default.pbxuser
+!**/ios/**/default.perspectivev3
