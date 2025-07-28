@@ -50,7 +50,7 @@ class PropertyCard extends StatelessWidget {
                 ),
               ),
               subtitle: Text(
-                property.address,
+                property.address ?? 'No address provided',
                 style: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 13,
@@ -133,7 +133,7 @@ class PropertyCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: InfoColumn(
                           label: 'Size',
-                          value: property.size,
+                          value: property.size ?? 'N/A',
                           bold: true,
                           large: true,
                         ),
@@ -149,7 +149,7 @@ class PropertyCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: InfoColumn(
                           label: 'Number of rooms',
-                          value: property.rooms,
+                          value: property.numberOfRooms ?? 'N/A',
                           bold: false,
                           large: true,
                         ),
