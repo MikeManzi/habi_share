@@ -24,7 +24,7 @@ class PropertyInfoCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        property.title,
+                        property.name,
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -33,7 +33,7 @@ class PropertyInfoCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Located in ${property.location}',
+                        'Located in ${property.address}',
                         style: TextStyle(
                           fontSize: 20,
                           color: AppColors.primaryPurple,

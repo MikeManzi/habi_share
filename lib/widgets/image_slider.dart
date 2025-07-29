@@ -85,7 +85,7 @@ class _ImageSliderState extends State<ImageSlider> {
             ),
             child: IconButton(
               icon: Icon(
-                widget.isFavorite ? Icons.sell : Icons.favorite_border,
+                widget.isFavorite ? Icons.favorite : Icons.favorite_border,
                 color: widget.isFavorite ? Colors.red : Colors.grey,
               ),
               onPressed: widget.onFavoriteToggle,
