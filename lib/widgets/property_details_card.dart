@@ -16,7 +16,7 @@ class PropertyDetailsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow('Number of rooms', '${property.normalRooms} normal rooms and ${property.masterBedrooms} master bedroom'),
+            _buildDetailRow('Number of rooms', '${property.numberOfRooms} rooms'),
             const SizedBox(height: 16),
             _buildDetailRow('Size', '${property.size.toStringAsFixed(0)} sqm'),
             const SizedBox(height: 16),

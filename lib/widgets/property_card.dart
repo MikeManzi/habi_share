@@ -145,7 +145,7 @@ class PropertyCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: InfoColumn(
                           label: 'Size',
-                          value: property.size ?? 'N/A',
+                          value: property.size.toString(),
                           bold: true,
                           large: true,
                         ),
@@ -160,24 +160,8 @@ class PropertyCard extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: InfoColumn(
-                          label: 'Number master bedrooms',
-                          value: property.masterBedrooms.toString(),
-                          bold: false,
-                          large: true,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 1,
-                      height: double.infinity,
-                      color: AppColors.inputBorder,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        child: InfoColumn(
-                          label: 'Number of other rooms',
-                          value: property.normalRooms.toString(),
+                          label: 'Number of rooms',
+                          value: property.numberOfRooms.toString(),
                           bold: false,
                           large: true,
                         ),

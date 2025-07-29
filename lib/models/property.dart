@@ -1,21 +1,18 @@
 class Property {
-  final String id;
+  String id;
   final String name;
   final String? address;
   final String phone;
   final double price;
   final String description;
   final String email;
-  final String? typeOfProperty;
-  final String image;
   final String? tinNumber;
   final String? businessCode;
   final String? priceSpan;
   final String? priceDescription;
   final List<String> documents;
   final double size;
-  final int normalRooms;
-  final int masterBedrooms;
+  final int numberOfRooms;
   final String lastActivity;
   final List<String> images;
   final String type;
@@ -30,16 +27,13 @@ class Property {
     required this.description,
     required this.price,
     required this.email,
-    this.typeOfProperty,
-    required this.image,
     this.tinNumber,
     this.businessCode,
     this.priceSpan,
     this.priceDescription,
     this.documents = const [],
     required this.size,
-    required this.normalRooms,
-    required this.masterBedrooms,
+    required this.numberOfRooms,
     required this.lastActivity,
     required this.images,
     required this.type,
@@ -53,16 +47,13 @@ class Property {
     address: map['address'],
     phone: map['phone'] ?? '',
     email: map['email'] ?? '',
-    typeOfProperty: map['typeOfProperty'],
-    image: map['image'] ?? '',
     tinNumber: map['tinNumber'],
     businessCode: map['businessCode'],
     priceSpan: map['priceSpan'],
     priceDescription: map['priceDescription'],
     documents: List<String>.from(map['documents'] ?? []),
     size: double.tryParse(map['size'] ?? '0.0') ?? 0.0,
-    normalRooms: int.tryParse(map['normalRooms'] ?? '0') ?? 0,
-    masterBedrooms: int.tryParse(map['masterBedrooms'] ?? '0') ?? 0,
+    numberOfRooms: int.tryParse(map['normalRooms'] ?? '0') ?? 0,
     lastActivity: map['lastActivity'] ?? '',
     images: List<String>.from(map['images']?.split(',') ?? []),
     type: map['type'] ?? '',
@@ -80,16 +71,13 @@ class Property {
     String? typeOfProperty,
     String? size,
     String? description,
-    String? image,
     String? tinNumber,
     String? businessCode,
-    String? rentalPrice,
     String? priceSpan,
     String? priceDescription,
     List<String>? documents,
     String? lastActivity,
-    int? normalRooms,
-    int? masterBedrooms,
+    int? numberOfRooms,
     double? price,
     List<String>? images,
     String? type,
@@ -102,9 +90,7 @@ class Property {
       address: address ?? this.address,
       phone: phone ?? this.phone,
       email: email ?? this.email,
-      typeOfProperty: typeOfProperty ?? this.typeOfProperty,
       description: description ?? this.description,
-      image: image ?? this.image,
       tinNumber: tinNumber ?? this.tinNumber,
       businessCode: businessCode ?? this.businessCode,
       priceSpan: priceSpan ?? this.priceSpan,
@@ -112,8 +98,7 @@ class Property {
       documents: documents ?? this.documents,
       lastActivity: lastActivity ?? this.lastActivity,
       size: size != null ? double.parse(size) : this.size,
-      normalRooms: this.normalRooms,
-      masterBedrooms: this.masterBedrooms,
+      numberOfRooms: numberOfRooms?? this.numberOfRooms,
       price: price ?? this.price,
       images: images ?? this.images,
       type: type ?? this.type,
