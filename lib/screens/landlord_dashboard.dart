@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habi_share/utils/property_data.dart';
 import '../utils/app_colors.dart';
 import '../models/property.dart';
 import '../models/notification.dart';
@@ -15,40 +16,8 @@ class LandlordDashboard extends StatefulWidget {
 
 class _LandlordDashboardState extends State<LandlordDashboard> {
   bool showNotifications = false;
-
   // Dummy data for properties and notifications
-  final List<Property> properties = [
-    Property(
-      name: 'Green Apartments',
-      address: 'Kg 99 st, Kigali-Rwanda',
-      phone: '+250789999999',
-      email: 'someone@example.com',
-      size: '1234 sqm',
-      numberOfRooms: '4',
-      lastActivity: '12/03/24',
-      image: '',
-    ),
-    Property(
-      name: 'Oasis Apartments',
-      address: 'Kg 420 st, Kigali-Rwanda',
-      phone: '+250789999999',
-      email: 'someone@example.com',
-      size: '1234 sqm',
-      numberOfRooms: '4',
-      lastActivity: '12/03/24',
-      image: '',
-    ),
-    Property(
-      name: 'Oasis Apartments',
-      address: 'Kg 420 st, Kigali-Rwanda',
-      phone: '+250789999999',
-      email: 'someone@example.com',
-      size: '1234 sqm',
-      numberOfRooms: '4',
-      lastActivity: '12/03/24',
-      image: '',
-    ),
-  ];
+  List<Property> properties = PropertyData.properties;
 
   final List<NotificationModel> notifications = [
     NotificationModel(

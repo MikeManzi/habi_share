@@ -144,7 +144,7 @@ class _PropertyDescriptionStepState extends State<PropertyDescriptionStep> {
 
                     Consumer<PropertyProvider>(
                       builder: (context, provider, child) {
-                        if (provider.property.image.isNotEmpty) {
+                        if (provider.property.images.isNotEmpty) {
                           return Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
@@ -162,7 +162,7 @@ class _PropertyDescriptionStepState extends State<PropertyDescriptionStep> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                if (provider.property.image.isNotEmpty)
+                                if (provider.property.images.isNotEmpty)
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 2,
@@ -177,7 +177,7 @@ class _PropertyDescriptionStepState extends State<PropertyDescriptionStep> {
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: Text(
-                                            provider.property.image,
+                                            provider.property.images[0],
                                             style: const TextStyle(
                                               color: Colors.white,
                                             ),
@@ -186,7 +186,7 @@ class _PropertyDescriptionStepState extends State<PropertyDescriptionStep> {
                                         IconButton(
                                           onPressed:
                                               () => provider.removeImage(
-                                                provider.property.image,
+                                                provider.property.images[0],
                                               ),
                                           icon: const Icon(
                                             Icons.delete,

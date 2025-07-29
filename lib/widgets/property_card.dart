@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habi_share/screens/property_details_screen.dart';
 import '../models/property.dart';
 import '../utils/app_colors.dart';
 import 'info_column.dart';
@@ -11,6 +12,17 @@ class PropertyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
+      child: InkWell(
+      borderRadius: BorderRadius.circular(6),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                PropertyDetailsScreen(propertyId: property.id),
+          ),
+        );
+      },
       child: Card(
         color: AppColors.inputBackground,
         margin: EdgeInsets.zero,
@@ -28,9 +40,9 @@ class PropertyCard extends StatelessWidget {
                 vertical: 0,
               ),
               leading:
-                  property.image.isNotEmpty
+                  property.images.isNotEmpty
                       ? CircleAvatar(
-                        backgroundImage: NetworkImage(property.image),
+                        backgroundImage: NetworkImage(property.images[0]),
                         radius: 24,
                       )
                       : CircleAvatar(
@@ -133,7 +145,7 @@ class PropertyCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: InfoColumn(
                           label: 'Size',
-                          value: property.size ?? 'N/A',
+                          value: property.size.toString(),
                           bold: true,
                           large: true,
                         ),
@@ -149,7 +161,7 @@ class PropertyCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: InfoColumn(
                           label: 'Number of rooms',
-                          value: property.numberOfRooms ?? 'N/A',
+                          value: property.numberOfRooms.toString(),
                           bold: false,
                           large: true,
                         ),
@@ -172,12 +184,14 @@ class PropertyCard extends StatelessWidget {
                       ),
                     ),
                   ],
+                  
                 ),
               ),
             ),
           ],
         ),
       ),
+    ),
     );
   }
 }

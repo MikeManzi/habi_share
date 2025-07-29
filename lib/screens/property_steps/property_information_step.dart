@@ -30,13 +30,13 @@ class _PropertyInformationStepState extends State<PropertyInformationStep> {
     super.initState();
     final provider = Provider.of<PropertyProvider>(context, listen: false);
     _addressController.text = provider.property.address ?? '';
-    _typeController.text = provider.property.typeOfProperty ?? '';
-    _sizeController.text = provider.property.size ?? '';
-    _roomsController.text = provider.property.numberOfRooms ?? '';
-    _isPetFriendly = provider.property.isPetFriendly;
-    _hasCarParking = provider.property.hasCarParking;
-    _hasGarden = provider.property.hasGarden;
-    _isSharedHousing = provider.property.isSharedHousing;
+    _typeController.text = provider.property.type ?? '';
+    _sizeController.text = provider.property.size.toString();
+    _roomsController.text = provider.property.numberOfRooms.toString();
+    _isPetFriendly = provider.property.tags.contains('Pet Friendly');
+    _hasCarParking = provider.property.tags.contains('Car Parking');
+    _hasGarden = provider.property.tags.contains('Garden');
+    _isSharedHousing = provider.property.tags.contains('Shared Housing');
   }
 
   @override
@@ -55,11 +55,8 @@ class _PropertyInformationStepState extends State<PropertyInformationStep> {
         address: _addressController.text,
         typeOfProperty: _typeController.text,
         size: _sizeController.text,
-        numberOfRooms: _roomsController.text,
-        isPetFriendly: _isPetFriendly,
-        hasCarParking: _hasCarParking,
-        hasGarden: _hasGarden,
-        isSharedHousing: _isSharedHousing,
+        numberOfRooms: int.tryParse(_roomsController.text) ?? 0,
+        tags: [_isPetFriendly? 'Pet Friendly': '',_hasCarParking? 'Car Parking': '', _hasGarden? 'Garden': '', _isSharedHousing? 'Shared Housing': '', ].where((tag) => tag.isNotEmpty).toList(),
       ),
     );
     widget.onNext();

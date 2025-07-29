@@ -3,11 +3,26 @@ import '../models/property.dart';
 
 class PropertyProvider extends ChangeNotifier {
   Property _property = Property(
+    id:'',
     name: '',
     phone: '',
     email: '',
-    image: '',
+    images: [],
     lastActivity: '',
+    documents: [],
+    tags: [],
+    isFavorite: false,
+    type: '',
+    address: '',
+    size: 0.0,
+    numberOfRooms: 0,
+    description: '',
+    tinNumber: '',
+    businessCode: '',
+    priceSpan: '',
+    priceDescription: '',
+    price: 0.0,
+
   );
   int _currentStep = 0;
 
@@ -40,18 +55,32 @@ class PropertyProvider extends ChangeNotifier {
 
   void reset() {
     _property = Property(
+      id: '',
       name: '',
       phone: '',
       email: '',
-      image: '',
+      images: [],
       lastActivity: '',
+      documents: [],
+      tags: [],
+      isFavorite: false,
+      type: '',
+      address: '',
+      size: 0.0,
+      numberOfRooms: 0,
+      description: '',
+      tinNumber: '',
+      businessCode: '',
+      priceSpan: '',
+      priceDescription: '',
+      price: 0.0,
     );
     _currentStep = 0;
     notifyListeners();
   }
 
   void updateImage(String imagePath) {
-    _property = _property.copyWith(image: imagePath);
+    _property = _property.copyWith(images: [imagePath]);
     notifyListeners();
   }
 
