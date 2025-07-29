@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habi_share/screens/menu.dart';
 import 'package:habi_share/utils/property_data.dart';
 import '../utils/app_colors.dart';
 import '../models/property.dart';
@@ -62,7 +63,13 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
             ),
             IconButton(
               icon: const Icon(Icons.menu, color: AppColors.primaryPurple),
-              onPressed: () {},
+              onPressed: (){
+                //open the menupage
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MenuPage()),
+                );
+              },
             ),
           ],
           bottom: PreferredSize(
