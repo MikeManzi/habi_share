@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habi_share/screens/profile_settings.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -80,7 +81,7 @@ class MenuPage extends StatelessWidget {
                 title: 'Profile Settings',
                 onTap: () {
                   // Handle profile settings navigation
-                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileSettingsPage()));
                 },
               ),
               
