@@ -24,12 +24,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      leading: showBackButton
-          ? IconButton(
-        icon: const Icon(Icons.arrow_back_ios, color: Colors.black54),
-        onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
-      )
-          : null,
+      leading:
+          showBackButton
+              ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.black54),
+                onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
+              )
+              : null,
       actions: [
         if (showCloseButton)
           IconButton(
@@ -58,11 +59,8 @@ class HabiShareLogo extends StatelessWidget {
   final double iconSize;
   final double textSize;
 
-  const HabiShareLogo({
-    Key? key,
-    this.iconSize = 24,
-    this.textSize = 18,
-  }) : super(key: key);
+  const HabiShareLogo({Key? key, this.iconSize = 24, this.textSize = 18})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +74,7 @@ class HabiShareLogo extends StatelessWidget {
             color: AppColors.primaryPurple,
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            Icons.home,
-            color: Colors.white,
-            size: iconSize * 0.67,
-          ),
+          child: Icon(Icons.home, color: Colors.white, size: iconSize * 0.67),
         ),
         const SizedBox(width: 8),
         Text(
@@ -134,9 +128,10 @@ class CustomButton extends StatelessWidget {
           disabledForegroundColor: Colors.grey[600],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
-            side: isOutlined
-                ? BorderSide(color: backgroundColor, width: 1)
-                : BorderSide.none,
+            side:
+                isOutlined
+                    ? BorderSide(color: backgroundColor, width: 1)
+                    : BorderSide.none,
           ),
         ),
         child: Text(
@@ -144,9 +139,10 @@ class CustomButton extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: isEnabled
-                ? (isOutlined ? backgroundColor : textColor)
-                : Colors.grey[600],
+            color:
+                isEnabled
+                    ? (isOutlined ? backgroundColor : textColor)
+                    : Colors.grey[600],
           ),
         ),
       ),
@@ -178,14 +174,14 @@ class TimeSlot extends StatelessWidget {
         height: 48,
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Colors.white.withOpacity(0.2)
-              : Colors.transparent,
+          color:
+              isSelected ? Colors.white.withOpacity(0.2) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isEnabled
-                ? Colors.white.withOpacity(0.5)
-                : Colors.white.withOpacity(0.2),
+            color:
+                isEnabled
+                    ? Colors.white.withOpacity(0.5)
+                    : Colors.white.withOpacity(0.2),
             width: 1,
           ),
         ),
@@ -193,9 +189,7 @@ class TimeSlot extends StatelessWidget {
           child: Text(
             time,
             style: TextStyle(
-              color: isEnabled
-                  ? Colors.white
-                  : Colors.white.withOpacity(0.4),
+              color: isEnabled ? Colors.white : Colors.white.withOpacity(0.4),
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
@@ -236,9 +230,10 @@ class CalendarDay extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
-          border: isToday && !isSelected
-              ? Border.all(color: Colors.white.withOpacity(0.5), width: 1)
-              : null,
+          border:
+              isToday && !isSelected
+                  ? Border.all(color: Colors.white.withOpacity(0.5), width: 1)
+                  : null,
         ),
         child: Center(
           child: Text(
@@ -297,15 +292,8 @@ class SuccessIcon extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(
-        Icons.check,
-        color: iconColor,
-        size: size * 0.5,
-      ),
+      decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle),
+      child: Icon(Icons.check, color: iconColor, size: size * 0.5),
     );
   }
 }
@@ -407,8 +395,18 @@ class CalendarHeader extends StatelessWidget {
 
   String _getMonthName(int month) {
     const monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     return monthNames[month - 1];
   }
@@ -421,20 +419,23 @@ class WeekDaysHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-          .map((day) => Expanded(
-        child: Center(
-          child: Text(
-            day,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ))
-          .toList(),
+      children:
+          ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+              .map(
+                (day) => Expanded(
+                  child: Center(
+                    child: Text(
+                      day,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
     );
   }
 }
@@ -502,21 +503,233 @@ class EmptyState extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          icon,
-          size: 48,
-          color: iconColor,
-        ),
+        Icon(icon, size: 48, color: iconColor),
         const SizedBox(height: 16),
         Text(
           message,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 16,
-          ),
+          style: const TextStyle(color: Colors.white70, fontSize: 16),
           textAlign: TextAlign.center,
         ),
       ],
+    );
+  }
+}
+
+// Custom TextField Component
+class CustomTextField extends StatelessWidget {
+  final String? hintText;
+  final String? labelText;
+  final String? suffixText;
+  final TextEditingController? controller;
+  final TextInputType? keyboardType;
+  final bool obscureText;
+  final int? maxLines;
+  final int? minLines;
+  final Function(String)? onChanged;
+  final String? Function(String?)? validator;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool enabled;
+
+  const CustomTextField({
+    Key? key,
+    this.hintText,
+    this.labelText,
+    this.suffixText,
+    this.controller,
+    this.keyboardType,
+    this.obscureText = false,
+    this.maxLines = 1,
+    this.minLines,
+    this.onChanged,
+    this.validator,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.enabled = true,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      maxLines: maxLines,
+      minLines: minLines,
+      enabled: enabled,
+      onChanged: onChanged,
+      validator: validator,
+      decoration: InputDecoration(
+        hintText: hintText,
+        labelText: labelText,
+        suffixText: suffixText,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: Colors.grey[50],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primaryPurple),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      ),
+    );
+  }
+}
+
+// Custom Dropdown Component
+class CustomDropdown<T> extends StatelessWidget {
+  final String? hintText;
+  final T? value;
+  final List<DropdownMenuItem<T>> items;
+  final Function(T?)? onChanged;
+  final String? Function(T?)? validator;
+
+  const CustomDropdown({
+    Key? key,
+    this.hintText,
+    this.value,
+    required this.items,
+    this.onChanged,
+    this.validator,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<T>(
+      value: value,
+      items: items,
+      onChanged: onChanged,
+      validator: validator,
+      decoration: InputDecoration(
+        hintText: hintText,
+        filled: true,
+        fillColor: Colors.grey[50],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primaryPurple),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      ),
+    );
+  }
+}
+
+// Custom Checkbox Component
+class CustomCheckbox extends StatelessWidget {
+  final String label;
+  final bool value;
+  final Function(bool?) onChanged;
+
+  const CustomCheckbox({
+    Key? key,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Checkbox(
+          value: value,
+          onChanged: onChanged,
+          fillColor: MaterialStateProperty.resolveWith<Color>((
+            Set<MaterialState> states,
+          ) {
+            if (states.contains(MaterialState.selected)) {
+              return Colors.white; // White background when checked
+            }
+            return Colors.transparent; // Transparent when unchecked
+          }),
+          checkColor: const Color(0xFF8A2851), // Burgundy checkmark
+          side: const BorderSide(color: Colors.white, width: 2), // White border
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        ),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 14, color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Upload Button Component
+class UploadButton extends StatelessWidget {
+  final String text;
+  final String? subtitle;
+  final VoidCallback onPressed;
+  final IconData? icon;
+
+  const UploadButton({
+    Key? key,
+    required this.text,
+    this.subtitle,
+    required this.onPressed,
+    this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: AppColors.primaryPurple),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon ?? Icons.upload_file, color: AppColors.primaryPurple),
+          const SizedBox(width: 8),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                text,
+                style: const TextStyle(color: AppColors.primaryPurple),
+              ),
+              if (subtitle != null)
+                Text(
+                  subtitle!,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

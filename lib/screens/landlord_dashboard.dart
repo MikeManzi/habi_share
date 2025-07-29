@@ -5,6 +5,7 @@ import '../models/property.dart';
 import '../models/notification.dart';
 import '../widgets/property_card.dart';
 import '../widgets/notification_popover.dart';
+import 'property_upload_flow.dart';
 
 class LandlordDashboard extends StatefulWidget {
   const LandlordDashboard({super.key});
@@ -129,7 +130,14 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                           vertical: 12,
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PropertyUploadFlow(),
+                          ),
+                        );
+                      },
                       label: const Text(
                         'Add property',
                         style: TextStyle(color: AppColors.primaryPurple),
