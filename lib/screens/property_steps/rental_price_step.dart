@@ -23,7 +23,7 @@ class _RentalPriceStepState extends State<RentalPriceStep> {
   void initState() {
     super.initState();
     final provider = Provider.of<PropertyProvider>(context, listen: false);
-    _priceController.text = provider.property.rentalPrice ?? '';
+    _priceController.text = provider.property.price?.toString() ?? '';
     _descriptionController.text = provider.property.priceDescription ?? '';
     _selectedSpan = provider.property.priceSpan ?? 'Monthly';
   }
@@ -39,7 +39,7 @@ class _RentalPriceStepState extends State<RentalPriceStep> {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
     provider.updateProperty(
       provider.property.copyWith(
-        rentalPrice: _priceController.text,
+        price: double.tryParse(_priceController.text),
         priceSpan: _selectedSpan,
         priceDescription: _descriptionController.text,
       ),
