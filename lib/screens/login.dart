@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:habi_share/screens/signup/personal_information.dart';
 import 'package:habi_share/widgets/text_field.dart';
 import '../widgets/custom_button.dart';
 import 'package:habi_share/screens/landlord_dashboard.dart';
+import 'package:habi_share/screens/client_dashboard.dart';
+import 'package:habi_share/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -31,35 +33,72 @@ class _LoginState extends State<Login> {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      setState(() {
-        _isLoading = false;
-      });
+        // Try to login with phone number (will find email associated with phone)
+        final success = await authProvider.signInWithPhone(
+          phone: _telephoneController.text.trim(),
+          password: _passwordController.text,
+        );
 
-      // Handle login logic here
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successful!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LandlordDashboard()),
-        );
+        if (mounted) {
+          if (success) {
+            final user = authProvider.user;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Welcome back ${user?.firstName}!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            // Navigate based on user role
+            if (user?.isOwner == true) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LandlordDashboard(),
+                ),
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ClientDashboardScreen(),
+                ),
+              );
+            }
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(authProvider.error ?? 'Login failed'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login error: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
 
   void _handleRegister() {
-    // Navigate to signup page
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PersonalInformation()),
-    );
+    // Navigate back to home page to choose role
+    Navigator.pop(context);
   }
 
   String? _validateTelephone(String? value) {
