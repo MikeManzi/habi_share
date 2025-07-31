@@ -118,12 +118,11 @@ class PropertyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateImage(String imagePath) async{
+  void updateImage(String imagePath) async {
     _property = _property.copyWith(images: [imagePath]);
-     await _propertyService.updateProperty(_property);
+    await _propertyService.updateProperty(_property);
     notifyListeners();
   }
-  
 
   void addDocument(String documentPath) {
     final currentDocuments = List<String>.from(_property.documents);
@@ -202,22 +201,21 @@ class PropertyProvider extends ChangeNotifier {
     }
   }
 
- Future<Property?> getPropertyById(String propertyId) async {
-  try {
-    Property? property = await _propertyService.getPropertyById(propertyId);
-    if(property == null){
-      throw Exception('Property not found');
+  Future<Property?> getPropertyById(String propertyId) async {
+    try {
+      Property? property = await _propertyService.getPropertyById(propertyId);
+      if (property == null) {
+        throw Exception('Property not found');
+      }
+      if (property != null && property.images.isEmpty) {
+        property.images.add('assets/default_property.png');
+      }
+      return property;
+    } catch (e) {
+      print('Error getting property by ID: $e');
+      return null;
     }
-    if(property != null && property.images.isEmpty){
-      property.images.add('assets/default_property.png');
-    }
-    return property;
-  } catch (e) {
-    print('Error getting property by ID: $e');
-    return null;
   }
-}
-
 
   void clearError() {
     _error = null;
@@ -450,6 +448,15 @@ class PropertyProvider extends ChangeNotifier {
 
       // Here you could also update the favorite status in Firebase
       // _propertyService.updatePropertyFavorite(propertyId, _allProperties[index].isFavorite);
+    }
+  }
+
+  // Find property by ID from already loaded properties
+  Property? findLoadedPropertyById(String propertyId) {
+    try {
+      return _allProperties.firstWhere((p) => p.id == propertyId);
+    } catch (e) {
+      return null;
     }
   }
 }
