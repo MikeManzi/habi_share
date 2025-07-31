@@ -41,7 +41,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
     final currentUser = user ?? _authProvider.user;
     if (currentUser != null) {
       _firstNameController.text = currentUser.firstName;
-      _lastNameController.text = currentUser.lastName ;
+      _lastNameController.text = currentUser.lastName;
       _phoneController.text = currentUser.telephone;
       _emailController.text = currentUser.email;
       // Don't pre-populate password for security reasons
@@ -61,22 +61,28 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   }
 
   String? _validatePassword(String? value) {
-    if (value !=null && value.isNotEmpty && value.length < 8) {
+    if (value != null && value.isNotEmpty && value.length < 8) {
       return 'Password must be at least 8 characters';
     }
 
     // Check for at least one uppercase letter
-    if (value!=null && value.isNotEmpty && !RegExp(r'[A-Z]').hasMatch(value)) {
+    if (value != null &&
+        value.isNotEmpty &&
+        !RegExp(r'[A-Z]').hasMatch(value)) {
       return 'Password must contain at least one uppercase letter';
     }
 
     // Check for at least one lowercase letter
-    if (value!=null && value.isNotEmpty && !RegExp(r'[a-z]').hasMatch(value)) {
+    if (value != null &&
+        value.isNotEmpty &&
+        !RegExp(r'[a-z]').hasMatch(value)) {
       return 'Password must contain at least one lowercase letter';
     }
 
     // Check for at least one number
-    if (value!=null && value.isNotEmpty && !RegExp(r'[0-9]').hasMatch(value)) {
+    if (value != null &&
+        value.isNotEmpty &&
+        !RegExp(r'[0-9]').hasMatch(value)) {
       return 'Password must contain at least one number';
     }
 
@@ -84,7 +90,8 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   }
 
   String? _validateConfirmPassword(String? value) {
-    if (_passwordController.text.isNotEmpty && ( value == null || value.isEmpty)) {
+    if (_passwordController.text.isNotEmpty &&
+        (value == null || value.isEmpty)) {
       return 'Please confirm your password';
     }
 
@@ -147,7 +154,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF8F4ED),
       body: SafeArea(
         child: Column(
           children: [
@@ -161,7 +168,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                     onTap: () => Navigator.pop(context),
                     child: const Icon(
                       Icons.arrow_back_ios,
-                      color:  Color(0xFF8A2851),
+                      color: Color(0xFF8A2851),
                       size: 24,
                     ),
                   ),
@@ -169,7 +176,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                     onTap: () => Navigator.pop(context),
                     child: const Icon(
                       Icons.close,
-                      color:  Color(0xFF8A2851),
+                      color: Color(0xFF8A2851),
                       size: 24,
                     ),
                   ),

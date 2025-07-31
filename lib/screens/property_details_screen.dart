@@ -8,7 +8,8 @@ import '../widgets/property_details_card.dart';
 class PropertyDetailsScreen extends StatefulWidget {
   final String propertyId;
 
-  const PropertyDetailsScreen({Key? key, required this.propertyId}) : super(key: key);
+  const PropertyDetailsScreen({Key? key, required this.propertyId})
+    : super(key: key);
 
   @override
   State<PropertyDetailsScreen> createState() => _PropertyDetailsScreenState();
@@ -40,19 +41,15 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
   Widget build(BuildContext context) {
     if (property == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Property Not Found'),
-        ),
+        appBar: AppBar(title: const Text('Property Not Found')),
         body: const Center(
-          child: Text(
-            'Property not found',
-            style: TextStyle(fontSize: 18),
-          ),
+          child: Text('Property not found', style: TextStyle(fontSize: 18)),
         ),
       );
     }
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F4ED),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,4 +68,3 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
     );
   }
 }
-
