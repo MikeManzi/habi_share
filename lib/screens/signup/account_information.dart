@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habi_share/screens/success_dialog.dart';
+import 'package:habi_share/screens/login.dart';
 import 'package:habi_share/widgets/custom_button.dart';
 import 'package:habi_share/widgets/text_field.dart';
 import 'package:habi_share/models/user.dart';
@@ -144,38 +144,78 @@ class _AccountInformationState extends State<AccountInformation> {
         _isLoading = true;
       });
 
+      print('Starting registration process...');
+
       try {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-        final success = await authProvider.register(
-          email: widget.email,
-          password: _passwordController.text,
-          firstName: widget.firstName,
-          lastName: widget.lastName,
-          telephone: widget.telephone,
-          username: _usernameController.text,
-          gender: _selectedGender,
-          role: widget.role,
-        );
+        print('Calling register method...');
+        final success = await authProvider
+            .register(
+              email: widget.email,
+              password: _passwordController.text,
+              firstName: widget.firstName,
+              lastName: widget.lastName,
+              telephone: widget.telephone,
+              username: _usernameController.text,
+              gender: _selectedGender,
+              role: widget.role,
+            )
+            .timeout(
+              const Duration(seconds: 30),
+              onTimeout: () {
+                print('Registration timed out');
+                throw Exception('Registration timed out. Please try again.');
+              },
+            );
+
+        print('Registration completed. Success: $success');
 
         if (mounted) {
+          print('Widget is still mounted, updating UI...');
+          // Stop loading first
+          setState(() {
+            _isLoading = false;
+          });
+
           if (success) {
-            // Registration successful
+            print('Registration successful, showing success dialog...');
+            // Registration successful - show success message first
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Welcome ${widget.firstName}! Registration successful!',
-                ),
+              const SnackBar(
+                content: Text('Registration successful!'),
                 backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
               ),
             );
 
-            // Navigate to success page
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SuccessDialog()),
+            // Show a simple dialog
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder:
+                  (context) => AlertDialog(
+                    title: const Text('Success!'),
+                    content: const Text(
+                      'Your account has been created successfully. You can now log in.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close dialog
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const Login(),
+                            ),
+                          );
+                        },
+                        child: const Text('Go to Login'),
+                      ),
+                    ],
+                  ),
             );
           } else {
+            print('Registration failed, showing error message...');
             // Registration failed - show error
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -184,21 +224,21 @@ class _AccountInformationState extends State<AccountInformation> {
               ),
             );
           }
+        } else {
+          print('Widget is no longer mounted');
         }
       } catch (e) {
+        print('Exception during registration: $e');
         if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('An error occurred: ${e.toString()}'),
               backgroundColor: Colors.red,
             ),
           );
-        }
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
         }
       }
     }

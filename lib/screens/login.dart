@@ -15,14 +15,14 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  final _telephoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _telephoneController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -36,9 +36,9 @@ class _LoginState extends State<Login> {
       try {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-        // Try to login with phone number (will find email associated with phone)
-        final success = await authProvider.signInWithPhone(
-          phone: _telephoneController.text.trim(),
+        // Login with email and password
+        final success = await authProvider.signInWithEmail(
+          email: _emailController.text.trim(),
           password: _passwordController.text,
         );
 
@@ -101,26 +101,16 @@ class _LoginState extends State<Login> {
     Navigator.pop(context);
   }
 
-  String? _validateTelephone(String? value) {
+  String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your telephone number';
+      return 'Please enter your email address';
     }
 
-    // Remove any spaces, dashes, or parentheses
-    String cleanedValue = value.replaceAll(RegExp(r'[\s\-\(\)]'), '');
-
-    // Check if it contains only digits after cleaning
-    if (!RegExp(r'^[0-9]+$').hasMatch(cleanedValue)) {
-      return 'Please enter a valid telephone number';
-    }
-
-    // Check length (adjust based on your country's phone number format)
-    if (cleanedValue.length < 10) {
-      return 'Telephone number must be at least 10 digits';
-    }
-
-    if (cleanedValue.length > 15) {
-      return 'Telephone number cannot exceed 15 digits';
+    // Basic email validation
+    if (!RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(value)) {
+      return 'Please enter a valid email address';
     }
 
     return null;
@@ -261,13 +251,13 @@ class _LoginState extends State<Login> {
 
                     const SizedBox(height: 40),
 
-                    // Telephone input - ENHANCED VALIDATION
+                    // Email input
                     CustomTextField(
-                      hintText: 'Telephone',
-                      controller: _telephoneController,
-                      keyboardType: TextInputType.phone,
-                      validator: _validateTelephone,
-                      prefixIcon: const Icon(Icons.phone, color: Colors.grey),
+                      hintText: 'Email',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: _validateEmail,
+                      prefixIcon: const Icon(Icons.email, color: Colors.grey),
                     ),
 
                     // Password input - ENHANCED VALIDATION
