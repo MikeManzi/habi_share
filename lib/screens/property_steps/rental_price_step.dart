@@ -42,7 +42,7 @@ class _RentalPriceStepState extends State<RentalPriceStep> {
   void _saveAndUpload() async {
     print('Starting property upload...');
     final provider = Provider.of<PropertyProvider>(context, listen: false);
-    
+
     // Update property with final pricing info
     provider.updateProperty(
       provider.property.copyWith(
@@ -51,16 +51,18 @@ class _RentalPriceStepState extends State<RentalPriceStep> {
         priceDescription: _descriptionController.text,
       ),
     );
-    
+
     print('Property data updated, submitting to Firebase...');
-    print('Property details: ${provider.property.name}, ${provider.property.address}');
+    print(
+      'Property details: ${provider.property.name}, ${provider.property.address}',
+    );
 
     try {
       // Submit the property to Firebase
       final success = await provider.submitProperty();
-      
+
       print('Upload result: $success');
-      
+
       if (success) {
         print('Upload successful, navigating to success screen');
         widget.onNext(); // Navigate to success screen
@@ -155,7 +157,8 @@ class _RentalPriceStepState extends State<RentalPriceStep> {
                         const SizedBox(height: 24),
 
                         CustomTextField(
-                          hintText: 'Detailed price description and justification',
+                          hintText:
+                              'Detailed price description and justification',
                           controller: _descriptionController,
                           maxLines: 6,
                           onChanged: (_) => setState(() {}),
@@ -168,7 +171,10 @@ class _RentalPriceStepState extends State<RentalPriceStep> {
                 const SizedBox(height: 24),
                 widgets.CustomButton(
                   text: provider.isLoading ? 'Uploading...' : 'Upload',
-                  onPressed: (_isFormValid && !provider.isLoading) ? _saveAndUpload : () {},
+                  onPressed:
+                      (_isFormValid && !provider.isLoading)
+                          ? _saveAndUpload
+                          : () {},
                   isLoading: provider.isLoading,
                   backgroundColor: Colors.white,
                   textColor: const Color(0xFF8A2851),

@@ -56,9 +56,12 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
         errorMessage = null;
       });
 
-      final propertyProvider = Provider.of<PropertyProvider>(context, listen: false);
+      final propertyProvider = Provider.of<PropertyProvider>(
+        context,
+        listen: false,
+      );
       final properties = await propertyProvider.getUserProperties();
-      
+
       setState(() {
         userProperties = properties;
         isLoadingProperties = false;
@@ -89,18 +92,11 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red,
-            ),
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
             Text(
               errorMessage!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.red,
-              ),
+              style: const TextStyle(fontSize: 16, color: Colors.red),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -140,10 +136,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
             const SizedBox(height: 8),
             const Text(
               "Add your first property to start managing your rentals",
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.inputHint,
-              ),
+              style: TextStyle(fontSize: 14, color: AppColors.inputHint),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -176,10 +169,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: userProperties.length,
       itemBuilder: (context, index) {
         final property = userProperties[index];

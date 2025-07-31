@@ -24,8 +24,18 @@ class DateTimeUtils {
   /// Formats a DateTime to a readable date string (e.g., "Jan 15, 2024")
   static String formatDate(DateTime dateTime) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[dateTime.month - 1]} ${dateTime.day}, ${dateTime.year}';
   }
@@ -33,7 +43,12 @@ class DateTimeUtils {
   /// Formats a DateTime to a readable date and time string (e.g., "Jan 15, 2024 at 2:30 PM")
   static String formatDateTime(DateTime dateTime) {
     final date = formatDate(dateTime);
-    final hour = dateTime.hour == 0 ? 12 : dateTime.hour > 12 ? dateTime.hour - 12 : dateTime.hour;
+    final hour =
+        dateTime.hour == 0
+            ? 12
+            : dateTime.hour > 12
+            ? dateTime.hour - 12
+            : dateTime.hour;
     final minute = dateTime.minute.toString().padLeft(2, '0');
     final amPm = dateTime.hour >= 12 ? 'PM' : 'AM';
     return '$date at $hour:$minute $amPm';
