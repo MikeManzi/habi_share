@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -184,6 +186,8 @@ class AuthProvider with ChangeNotifier {
     return await _authService.isPhoneAvailable(phone);
   }
 
+
+
   void clearError() {
     _setError(null);
   }
@@ -209,4 +213,60 @@ class AuthProvider with ChangeNotifier {
       return 'An error occurred. Please try again';
     }
   }
+
+
+  Future<User?> updateUserProfile({
+  required String firstName,
+  required String lastName,
+  required String telephone,
+  String? password,
+}) async {
+  try {
+    final firebaseUser = auth.FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null) throw Exception('No user logged in');
+    // Update password if provided
+    if (password != null && password.isNotEmpty) {
+      await firebaseUser.updatePassword(password);
+    }
+
+    // Update user document in Firestore
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .update({
+      'firstName': firstName,
+      'lastName': lastName,
+      'telephone': telephone,
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
+
+    // Fetch and return the updated user
+    final updatedDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .get();
+
+    if (updatedDoc.exists) {
+      return User.fromMap(updatedDoc.data()!);
+    }
+    
+    
+    return null;
+  } on auth.FirebaseAuthException catch (e) {
+    switch (e.code) {
+      case 'requires-recent-login':
+        throw Exception('Please log out and log back in to update your profile');
+      case 'email-already-in-use':
+        throw Exception('This email is already in use by another account');
+      case 'invalid-email':
+        throw Exception('Invalid email address');
+      case 'weak-password':
+        throw Exception('Password is too weak');
+      default:
+        throw Exception('Failed to update profile: ${e.message}');
+    }
+  } catch (e) {
+    throw Exception('Failed to update profile: $e');
+  }
+}
 }

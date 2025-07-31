@@ -59,6 +59,7 @@ void _loadProperty() async {
     }
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F4ED),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
