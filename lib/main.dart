@@ -1,35 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; 
+import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:habi_share/screens/home_page.dart';
 import 'package:habi_share/providers/property_provider.dart';
+import 'package:habi_share/providers/auth_provider.dart';
+import 'package:habi_share/screens/landlord_dashboard.dart';
+import 'package:habi_share/screens/client_dashboard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => PropertyProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => PropertyProvider()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+      ],
       child: MaterialApp(
         title: 'HabiShare',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const HomePage(),
+        home: const AuthWrapper(),
         debugShowCheckedModeBanner: false,
       ),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        if (authProvider.isAuthenticated) {
+          final user = authProvider.user;
+          if (user?.isOwner == true) {
+            return const LandlordDashboard();
+          } else {
+            return const ClientDashboardScreen();
+          }
+        } else {
+          return const HomePage();
+        }
+      },
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habi_share/screens/login.dart';
 import 'package:habi_share/screens/signup/personal_information.dart';
 import 'package:habi_share/widgets/custom_button.dart';
+import 'package:habi_share/models/user.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -122,7 +123,9 @@ class HomePage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const PersonalInformation(),
+                builder:
+                    (context) =>
+                        const PersonalInformation(role: UserRole.client),
               ),
             );
           },
@@ -163,7 +166,9 @@ class HomePage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const PersonalInformation(),
+                builder:
+                    (context) =>
+                        const PersonalInformation(role: UserRole.owner),
               ),
             );
           },

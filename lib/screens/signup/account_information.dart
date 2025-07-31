@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:habi_share/screens/success_dialog.dart';
+import 'package:habi_share/screens/login.dart';
 import 'package:habi_share/widgets/custom_button.dart';
 import 'package:habi_share/widgets/text_field.dart';
+import 'package:habi_share/models/user.dart';
+import 'package:habi_share/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class AccountInformation extends StatefulWidget {
   final String firstName;
   final String lastName;
   final String telephone;
   final String email;
+  final UserRole role;
 
   const AccountInformation({
     super.key,
@@ -15,6 +19,7 @@ class AccountInformation extends StatefulWidget {
     required this.lastName,
     required this.telephone,
     required this.email,
+    required this.role,
   });
 
   @override
@@ -61,6 +66,27 @@ class _AccountInformationState extends State<AccountInformation> {
     }
 
     return null;
+  }
+
+  Future<void> _validateUsernameAsync() async {
+    final username = _usernameController.text.trim();
+    if (username.isEmpty || username.length < 3) return;
+
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final isAvailable = await authProvider.isUsernameAvailable(username);
+
+      if (mounted && !isAvailable) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Username is already taken'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    } catch (e) {
+      // Handle error silently or show a message
+    }
   }
 
   String? _validatePassword(String? value) {
@@ -118,20 +144,102 @@ class _AccountInformationState extends State<AccountInformation> {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      print('Starting registration process...');
 
-      setState(() {
-        _isLoading = false;
-      });
+      try {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      // Handle registration logic here
-      if (mounted) {
-        // Navigate to success page
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const SuccessDialog()),
-        );
+        print('Calling register method...');
+        final success = await authProvider
+            .register(
+              email: widget.email,
+              password: _passwordController.text,
+              firstName: widget.firstName,
+              lastName: widget.lastName,
+              telephone: widget.telephone,
+              username: _usernameController.text,
+              gender: _selectedGender,
+              role: widget.role,
+            )
+            .timeout(
+              const Duration(seconds: 30),
+              onTimeout: () {
+                print('Registration timed out');
+                throw Exception('Registration timed out. Please try again.');
+              },
+            );
+
+        print('Registration completed. Success: $success');
+
+        if (mounted) {
+          print('Widget is still mounted, updating UI...');
+          // Stop loading first
+          setState(() {
+            _isLoading = false;
+          });
+
+          if (success) {
+            print('Registration successful, showing success dialog...');
+            // Registration successful - show success message first
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Registration successful!'),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
+              ),
+            );
+
+            // Show a simple dialog
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder:
+                  (context) => AlertDialog(
+                    title: const Text('Success!'),
+                    content: const Text(
+                      'Your account has been created successfully. You can now log in.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close dialog
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const Login(),
+                            ),
+                          );
+                        },
+                        child: const Text('Go to Login'),
+                      ),
+                    ],
+                  ),
+            );
+          } else {
+            print('Registration failed, showing error message...');
+            // Registration failed - show error
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(authProvider.error ?? 'Registration failed'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        } else {
+          print('Widget is no longer mounted');
+        }
+      } catch (e) {
+        print('Exception during registration: $e');
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('An error occurred: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
   }
@@ -267,6 +375,19 @@ class _AccountInformationState extends State<AccountInformation> {
                             hintText: 'Username',
                             controller: _usernameController,
                             validator: _validateUsername,
+                            onChanged: (value) {
+                              // Debounce username validation
+                              if (value.length >= 3) {
+                                Future.delayed(
+                                  const Duration(milliseconds: 500),
+                                  () {
+                                    if (_usernameController.text == value) {
+                                      _validateUsernameAsync();
+                                    }
+                                  },
+                                );
+                              }
+                            },
                           ),
 
                           // Gender dropdown
