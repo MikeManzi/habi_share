@@ -26,20 +26,14 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
   }
 
 void _loadProperty() async {
-  print("property id: ${widget.propertyId}");
   Property? propertyById = await PropertyProvider().getPropertyById(
     widget.propertyId,
   );
-
-  print("property by id name: ${propertyById?.images}");
-
-  // Fix: Check propertyById, not property
   if (propertyById != null) {
-    setState(() {  // Fix: Remove async
+    setState(() {
       property = propertyById;
     });
   } else {
-    // Optional: Handle the null case
     setState(() {
       property = null; // Ensure it stays null if not found
     });
@@ -48,7 +42,7 @@ void _loadProperty() async {
 
   void _toggleFavorite() {
     if (property != null) {
-      PropertyData.toggleFavorite(property!.id);
+      PropertyProvider().updateProperty(property!.copyWith(isFavorite: !property!.isFavorite));
       _loadProperty(); // Refresh the property data
     }
   }
