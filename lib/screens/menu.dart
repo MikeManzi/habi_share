@@ -46,7 +46,7 @@ class MenuPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Icon(
-                        Icons.business,
+                        Icons.apps,
                         color: Colors.white,
                         size: 30,
                       ),
@@ -57,7 +57,7 @@ class MenuPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF8B4B8C),
+                        color: Color(0xFF8A2851),
                       ),
                     ),
                   ],
