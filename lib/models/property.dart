@@ -17,6 +17,7 @@ class Property {
   final List<String> images;
   final String type;
   final List<String> tags;
+  final String? rentalPrice;
   bool isFavorite;
 
   Property({
@@ -39,6 +40,7 @@ class Property {
     required this.type,
     required this.tags,
     this.isFavorite = false,
+    this.rentalPrice
   });
 
   factory Property.fromMap(Map<String, dynamic> map) => Property(
@@ -63,6 +65,8 @@ class Property {
     price: double.tryParse(map['price'] ?? '0.0') ?? 0.0,
   );
 
+
+
   Property copyWith({
     String? name,
     String? address,
@@ -83,6 +87,7 @@ class Property {
     String? type,
     List<String>? tags,
     bool? isFavorite,
+    String? rentalPrice
   }) {
     return Property(
       id: id,
@@ -104,6 +109,7 @@ class Property {
       type: type ?? this.type,
       tags: tags ?? this.tags,
       isFavorite: isFavorite ?? this.isFavorite,
+
     );
   }
 
