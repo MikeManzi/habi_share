@@ -51,8 +51,10 @@ class _ImageSliderState extends State<ImageSlider> {
               return Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(widget.images[index]),
-                    fit: BoxFit.cover,
+                    image: AssetImage(
+                      widget.images[index],
+                    ), // You'll need to add this image
+                    fit: BoxFit.contain,
                   ),
                 ),
               );
@@ -80,7 +82,12 @@ class _ImageSliderState extends State<ImageSlider> {
           right: 16,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.9, red: 0.9, green: 0.9, blue:  0.9),
+              color: Colors.white.withValues(
+                alpha: 0.9,
+                red: 0.9,
+                green: 0.9,
+                blue: 0.9,
+              ),
               shape: BoxShape.circle,
             ),
             child: IconButton(
@@ -107,9 +114,10 @@ class _ImageSliderState extends State<ImageSlider> {
                 height: 8,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _currentIndex == index
-                      ? AppColors.primaryPurple
-                      : Colors.grey.shade400,
+                  color:
+                      _currentIndex == index
+                          ? AppColors.primaryPurple
+                          : Colors.grey.shade400,
                 ),
               ),
             ),

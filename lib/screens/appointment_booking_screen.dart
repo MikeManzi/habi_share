@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:habi_share/utils/app_colors.dart';
 import '../components/reusable_components.dart';
+import '../models/appointment.dart';
+import '../services/appointment_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AppointmentBookingScreen extends StatefulWidget {
-  const AppointmentBookingScreen({Key? key}) : super(key: key);
+  final String propertyId;
+
+  const AppointmentBookingScreen({Key? key, required this.propertyId}) : super(key: key);
 
   @override
   State<AppointmentBookingScreen> createState() => _AppointmentBookingScreenState();
@@ -12,6 +17,8 @@ class AppointmentBookingScreen extends StatefulWidget {
 class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   late PageController _pageController;
   int _currentPage = 0;
+  final AppointmentService _appointmentService = AppointmentService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Calendar state
   DateTime _selectedDate = DateTime.now();
@@ -23,6 +30,8 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
   // Booking state
   bool _isLoading = false;
+  bool _bookingSuccess = false;
+  String? _appointmentId;
 
   @override
   void initState() {
@@ -95,14 +104,34 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       _isLoading = true;
     });
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final user = _auth.currentUser;
+      if (user == null) throw Exception('User not logged in');
 
-    setState(() {
-      _isLoading = false;
-    });
+      final appointment = Appointment(
+        id: '', // Will be set by Firestore
+        propertyId: widget.propertyId,
+        userId: user.uid,
+        date: _selectedDate,
+        timeSlot: _selectedTimeSlot!,
+        createdAt: DateTime.now(),
+      );
 
-    _nextPage();
+      _appointmentId = await _appointmentService.bookAppointment(appointment);
+
+      setState(() {
+        _bookingSuccess = true;
+      });
+      _nextPage();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Booking failed: ${e.toString()}')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _backToListings() {
@@ -360,13 +389,10 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Success icon
           const SuccessIcon(),
-
           const SizedBox(height: 24),
-
           const Text(
-            'Your appointment has been booked successfully, details and guidelines will be sent to your email in a few.',
+            'Your appointment has been booked successfully!',
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -374,10 +400,15 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-
           const SizedBox(height: 16),
-
-          // Appointment summary
+          Text(
+            'Reference: $_appointmentId',
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -396,6 +427,13 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
+                  'Property ID: ${widget.propertyId}',
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
                   'Date: ${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
                   style: const TextStyle(
                     color: Colors.white70,
@@ -412,10 +450,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
               ],
             ),
           ),
-
           const SizedBox(height: 40),
-
-          // Back to listings button
           CustomButton(
             text: 'Back to listings',
             onPressed: _backToListings,
