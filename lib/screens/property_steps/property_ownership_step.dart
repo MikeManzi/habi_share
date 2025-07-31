@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/property_provider.dart';
 import '../../components/reusable_components.dart';
-import '../../utils/app_colors.dart';
 
 class PropertyOwnershipStep extends StatefulWidget {
   final VoidCallback onNext;
@@ -14,6 +13,8 @@ class PropertyOwnershipStep extends StatefulWidget {
 }
 
 class _PropertyOwnershipStepState extends State<PropertyOwnershipStep> {
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _tinController = TextEditingController();
   final _businessCodeController = TextEditingController();
   List<String> _selectedDocuments = [];
@@ -22,12 +23,16 @@ class _PropertyOwnershipStepState extends State<PropertyOwnershipStep> {
   void initState() {
     super.initState();
     final provider = Provider.of<PropertyProvider>(context, listen: false);
+    _emailController.text = provider.property.email;
+    _phoneController.text = provider.property.phone;
     _tinController.text = provider.property.tinNumber ?? '';
     _businessCodeController.text = provider.property.businessCode ?? '';
   }
 
   @override
   void dispose() {
+    _emailController.dispose();
+    _phoneController.dispose();
     _tinController.dispose();
     _businessCodeController.dispose();
     super.dispose();
@@ -37,6 +42,8 @@ class _PropertyOwnershipStepState extends State<PropertyOwnershipStep> {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
     provider.updateProperty(
       provider.property.copyWith(
+        email: _emailController.text,
+        phone: _phoneController.text,
         tinNumber: _tinController.text,
         businessCode: _businessCodeController.text,
       ),
@@ -139,7 +146,9 @@ class _PropertyOwnershipStepState extends State<PropertyOwnershipStep> {
   }
 
   bool get _isFormValid {
-    return _tinController.text.isNotEmpty;
+    return _emailController.text.isNotEmpty &&
+           _phoneController.text.isNotEmpty &&
+           _tinController.text.isNotEmpty;
   }
 
   @override
@@ -244,6 +253,22 @@ class _PropertyOwnershipStepState extends State<PropertyOwnershipStep> {
                     ),
 
                     const SizedBox(height: 24),
+
+                    CustomTextField(
+                      hintText: 'Contact Email',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 16),
+
+                    CustomTextField(
+                      hintText: 'Contact Phone',
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 16),
 
                     CustomTextField(
                       hintText: 'TIN Number',
