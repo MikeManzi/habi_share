@@ -60,7 +60,8 @@ class _PropertyUploadFlowState extends State<PropertyUploadFlow> {
   void _goToHome() {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
     provider.reset();
-    Navigator.pop(context);
+    // Return true to indicate successful property upload
+    Navigator.pop(context, true);
   }
 
   @override

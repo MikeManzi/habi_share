@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habi_share/screens/property_details_screen.dart';
 import '../models/property.dart';
 import '../utils/app_colors.dart';
+import '../utils/date_utils.dart';
 import 'info_column.dart';
 
 class PropertyCard extends StatelessWidget {
@@ -19,7 +20,7 @@ class PropertyCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                PropertyDetailsScreen(propertyId: property.id),
+                PropertyDetailsScreen(propertyId: "HMke3XwtdN2alGC5Btzo"),
           ),
         );
       },
@@ -177,7 +178,10 @@ class PropertyCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: InfoColumn(
                           label: 'Last activity',
-                          value: property.lastActivity,
+                          value: DateTimeUtils.formatLastActivity(
+                            property.createdAt,
+                            property.updatedAt,
+                          ),
                           bold: true,
                           large: false,
                         ),

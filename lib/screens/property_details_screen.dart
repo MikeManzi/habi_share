@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habi_share/providers/property_provider.dart';
 import '../models/property.dart';
 import '../utils/property_data.dart';
 import '../widgets/image_slider.dart';
@@ -24,15 +25,24 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
     _loadProperty();
   }
 
-  void _loadProperty() {
+void _loadProperty() async {
+  Property? propertyById = await PropertyProvider().getPropertyById(
+    widget.propertyId,
+  );
+  if (propertyById != null) {
     setState(() {
-      property = PropertyData.getPropertyById(widget.propertyId);
+      property = propertyById;
+    });
+  } else {
+    setState(() {
+      property = null; // Ensure it stays null if not found
     });
   }
+}
 
   void _toggleFavorite() {
     if (property != null) {
-      PropertyData.toggleFavorite(property!.id);
+      PropertyProvider().updateProperty(property!.copyWith(isFavorite: !property!.isFavorite));
       _loadProperty(); // Refresh the property data
     }
   }
