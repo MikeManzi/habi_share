@@ -4,7 +4,7 @@ import '../services/property_service.dart';
 
 class PropertyProvider extends ChangeNotifier {
   final PropertyService _propertyService = PropertyService();
-  
+
   // Current property being created/edited
   Property _property = Property(
     id: '',
@@ -38,7 +38,7 @@ class PropertyProvider extends ChangeNotifier {
   bool _hasMoreProperties = true;
   String _currentFilter = 'All';
   String _searchQuery = '';
-  
+
   // Loading states
   int _currentStep = 0;
   bool _isLoading = false;
@@ -118,12 +118,11 @@ class PropertyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateImage(String imagePath) async{
+  void updateImage(String imagePath) async {
     _property = _property.copyWith(images: [imagePath]);
-     await _propertyService.updateProperty(_property);
+    await _propertyService.updateProperty(_property);
     notifyListeners();
   }
-  
 
   void addDocument(String documentPath) {
     final currentDocuments = List<String>.from(_property.documents);
@@ -156,7 +155,7 @@ class PropertyProvider extends ChangeNotifier {
       notifyListeners();
 
       // Validate required fields
-      if (_property.name.isEmpty || 
+      if (_property.name.isEmpty ||
           _property.address?.isEmpty == true ||
           _property.description.isEmpty ||
           _property.price <= 0) {
@@ -166,12 +165,12 @@ class PropertyProvider extends ChangeNotifier {
 
       // Submit to Firebase
       final propertyId = await _propertyService.createProperty(_property);
-      
+
       if (propertyId != null) {
         _property.id = propertyId;
         return true;
       }
-      
+
       _error = 'Failed to submit property';
       return false;
     } catch (e) {
@@ -202,22 +201,21 @@ class PropertyProvider extends ChangeNotifier {
     }
   }
 
- Future<Property?> getPropertyById(String propertyId) async {
-  try {
-    Property? property = await _propertyService.getPropertyById(propertyId);
-    if(property == null){
-      throw Exception('Property not found');
+  Future<Property?> getPropertyById(String propertyId) async {
+    try {
+      Property? property = await _propertyService.getPropertyById(propertyId);
+      if (property == null) {
+        throw Exception('Property not found');
+      }
+      if (property != null && property.images.isEmpty) {
+        property.images.add('assets/default_property.png');
+      }
+      return property;
+    } catch (e) {
+      print('Error getting property by ID: $e');
+      return null;
     }
-    if(property != null && property.images.isEmpty){
-      property.images.add('assets/default_property.png');
-    }
-    return property;
-  } catch (e) {
-    print('Error getting property by ID: $e');
-    return null;
   }
-}
-
 
   void clearError() {
     _error = null;
@@ -236,12 +234,14 @@ class PropertyProvider extends ChangeNotifier {
       print('PropertyProvider: Loading ALL properties for debugging...');
       final properties = await _propertyService.getAllPropertiesForDebugging();
       print('PropertyProvider: Received ${properties.length} total properties');
-      
+
       _allProperties = properties;
       _applyFilters();
-      
-      print('PropertyProvider: After filtering: ${_filteredProperties.length} properties');
-      
+
+      print(
+        'PropertyProvider: After filtering: ${_filteredProperties.length} properties',
+      );
+
       _hasMoreProperties = false; // No pagination for debug
     } catch (e) {
       _error = 'Error loading properties: ${e.toString()}';
@@ -260,14 +260,18 @@ class PropertyProvider extends ChangeNotifier {
       notifyListeners();
 
       print('PropertyProvider: Loading client properties...');
-      final properties = await _propertyService.getApprovedProperties(limit: 20);
+      final properties = await _propertyService.getApprovedProperties(
+        limit: 20,
+      );
       print('PropertyProvider: Received ${properties.length} properties');
-      
+
       _allProperties = properties;
       _applyFilters();
-      
-      print('PropertyProvider: After filtering: ${_filteredProperties.length} properties');
-      
+
+      print(
+        'PropertyProvider: After filtering: ${_filteredProperties.length} properties',
+      );
+
       // Store last document for pagination
       if (properties.isNotEmpty) {
         // We'll need to get the document snapshot separately for pagination
@@ -291,7 +295,9 @@ class PropertyProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      final properties = await _propertyService.getApprovedProperties(limit: 20);
+      final properties = await _propertyService.getApprovedProperties(
+        limit: 20,
+      );
       _allProperties = properties;
       _hasMoreProperties = properties.length == 20;
       _applyFilters();
@@ -313,8 +319,10 @@ class PropertyProvider extends ChangeNotifier {
       notifyListeners();
 
       // For simplified pagination, we'll use offset-based approach
-      final moreProperties = await _propertyService.getApprovedProperties(limit: 20);
-      
+      final moreProperties = await _propertyService.getApprovedProperties(
+        limit: 20,
+      );
+
       // In a real implementation, you'd use startAfterDocument
       // For now, we'll simulate by checking if we get fewer than requested
       if (moreProperties.length < 20) {
@@ -334,45 +342,61 @@ class PropertyProvider extends ChangeNotifier {
 
   // Apply search and filter
   void _applyFilters() {
-    print('PropertyProvider: Applying filters - currentFilter: $_currentFilter, searchQuery: "$_searchQuery"');
-    print('PropertyProvider: Total properties before filtering: ${_allProperties.length}');
-    
+    print(
+      'PropertyProvider: Applying filters - currentFilter: $_currentFilter, searchQuery: "$_searchQuery"',
+    );
+    print(
+      'PropertyProvider: Total properties before filtering: ${_allProperties.length}',
+    );
+
     List<Property> filtered = List.from(_allProperties);
 
     // Apply type filter
     if (_currentFilter != 'All') {
       print('PropertyProvider: Applying filter: $_currentFilter');
-      filtered = filtered.where((property) {
-        switch (_currentFilter) {
-          case 'Apartments':
-            return property.type.toLowerCase().contains('apartment');
-          case 'For sale':
-            return property.priceSpan?.toLowerCase() == 'one-time' || 
-                   property.tags.any((tag) => tag.toLowerCase().contains('sale'));
-          case 'Shared':
-            return property.tags.any((tag) => tag.toLowerCase().contains('shared')) ||
-                   property.description.toLowerCase().contains('shared');
-          default:
-            return true;
-        }
-      }).toList();
-      print('PropertyProvider: After type filter: ${filtered.length} properties');
+      filtered =
+          filtered.where((property) {
+            switch (_currentFilter) {
+              case 'Apartments':
+                return property.type.toLowerCase().contains('apartment');
+              case 'For sale':
+                return property.priceSpan?.toLowerCase() == 'one-time' ||
+                    property.tags.any(
+                      (tag) => tag.toLowerCase().contains('sale'),
+                    );
+              case 'Shared':
+                return property.tags.any(
+                      (tag) => tag.toLowerCase().contains('shared'),
+                    ) ||
+                    property.description.toLowerCase().contains('shared');
+              default:
+                return true;
+            }
+          }).toList();
+      print(
+        'PropertyProvider: After type filter: ${filtered.length} properties',
+      );
     }
 
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
       print('PropertyProvider: Applying search: "$_searchQuery"');
-      filtered = filtered.where((property) {
-        final query = _searchQuery.toLowerCase();
-        return property.name.toLowerCase().contains(query) ||
-               property.address?.toLowerCase().contains(query) == true ||
-               property.description.toLowerCase().contains(query);
-      }).toList();
-      print('PropertyProvider: After search filter: ${filtered.length} properties');
+      filtered =
+          filtered.where((property) {
+            final query = _searchQuery.toLowerCase();
+            return property.name.toLowerCase().contains(query) ||
+                property.address?.toLowerCase().contains(query) == true ||
+                property.description.toLowerCase().contains(query);
+          }).toList();
+      print(
+        'PropertyProvider: After search filter: ${filtered.length} properties',
+      );
     }
 
     _filteredProperties = filtered;
-    print('PropertyProvider: Final filtered properties: ${_filteredProperties.length}');
+    print(
+      'PropertyProvider: Final filtered properties: ${_filteredProperties.length}',
+    );
   }
 
   // Set filter
@@ -399,11 +423,13 @@ class PropertyProvider extends ChangeNotifier {
     return _filteredProperties.where((property) {
       switch (category.toLowerCase()) {
         case 'shared housing':
-          return property.tags.any((tag) => tag.toLowerCase().contains('shared')) ||
-                 property.description.toLowerCase().contains('shared');
+          return property.tags.any(
+                (tag) => tag.toLowerCase().contains('shared'),
+              ) ||
+              property.description.toLowerCase().contains('shared');
         case 'for sale':
-          return property.priceSpan?.toLowerCase() == 'one-time' || 
-                 property.tags.any((tag) => tag.toLowerCase().contains('sale'));
+          return property.priceSpan?.toLowerCase() == 'one-time' ||
+              property.tags.any((tag) => tag.toLowerCase().contains('sale'));
         case 'apartments':
           return property.type.toLowerCase().contains('apartment');
         default:
@@ -419,9 +445,18 @@ class PropertyProvider extends ChangeNotifier {
       _allProperties[index].isFavorite = !_allProperties[index].isFavorite;
       _applyFilters();
       notifyListeners();
-      
+
       // Here you could also update the favorite status in Firebase
       // _propertyService.updatePropertyFavorite(propertyId, _allProperties[index].isFavorite);
+    }
+  }
+
+  // Find property by ID from already loaded properties
+  Property? findLoadedPropertyById(String propertyId) {
+    try {
+      return _allProperties.firstWhere((p) => p.id == propertyId);
+    } catch (e) {
+      return null;
     }
   }
 }

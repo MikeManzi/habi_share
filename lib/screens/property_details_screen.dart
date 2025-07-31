@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:habi_share/providers/property_provider.dart';
 import '../models/property.dart';
-import '../utils/property_data.dart';
 import '../widgets/image_slider.dart';
 import '../widgets/property_info_card.dart';
 import '../widgets/property_details_card.dart';
@@ -18,6 +18,7 @@ class PropertyDetailsScreen extends StatefulWidget {
 
 class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
   Property? property;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -25,35 +26,86 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
     _loadProperty();
   }
 
-void _loadProperty() async {
-  Property? propertyById = await PropertyProvider().getPropertyById(
-    widget.propertyId,
-  );
-  if (propertyById != null) {
-    setState(() {
-      property = propertyById;
-    });
-  } else {
-    setState(() {
-      property = null; // Ensure it stays null if not found
-    });
+  void _loadProperty() async {
+    try {
+      final propertyProvider = Provider.of<PropertyProvider>(
+        context,
+        listen: false,
+      );
+
+      // First, try to find the property in the already loaded properties
+      Property? foundProperty = propertyProvider.findLoadedPropertyById(
+        widget.propertyId,
+      );
+
+      // If not found in loaded properties, try to fetch from Firebase
+      if (foundProperty == null) {
+        print(
+          'Property not found in loaded properties, fetching from Firebase...',
+        );
+        foundProperty = await propertyProvider.getPropertyById(
+          widget.propertyId,
+        );
+      }
+
+      if (mounted) {
+        setState(() {
+          property = foundProperty;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading property: $e');
+      if (mounted) {
+        setState(() {
+          property = null;
+          isLoading = false;
+        });
+      }
+    }
   }
-}
 
   void _toggleFavorite() {
     if (property != null) {
-      PropertyProvider().updateProperty(property!.copyWith(isFavorite: !property!.isFavorite));
+      final propertyProvider = Provider.of<PropertyProvider>(
+        context,
+        listen: false,
+      );
+      propertyProvider.toggleFavorite(property!.id);
       _loadProperty(); // Refresh the property data
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Loading...')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     if (property == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Property Not Found')),
         body: const Center(
-          child: Text('Property not found', style: TextStyle(fontSize: 18)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error_outline, size: 64, color: Colors.grey),
+              SizedBox(height: 16),
+              Text(
+                'Property not found',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'This property may not exist or you may not have permission to view it.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
         ),
       );
     }

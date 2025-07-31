@@ -36,7 +36,7 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= 
+    if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       // Load more when user scrolls near the bottom
       context.read<PropertyProvider>().loadMoreClientProperties();
@@ -51,10 +51,22 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
         child: Consumer<PropertyProvider>(
           builder: (context, propertyProvider, child) {
             final filters = [
-              {'label': 'All', 'selected': propertyProvider.currentFilter == 'All'},
-              {'label': 'Apartments', 'selected': propertyProvider.currentFilter == 'Apartments'},
-              {'label': 'For sale', 'selected': propertyProvider.currentFilter == 'For sale'},
-              {'label': 'Shared', 'selected': propertyProvider.currentFilter == 'Shared'},
+              {
+                'label': 'All',
+                'selected': propertyProvider.currentFilter == 'All',
+              },
+              {
+                'label': 'Apartments',
+                'selected': propertyProvider.currentFilter == 'Apartments',
+              },
+              {
+                'label': 'For sale',
+                'selected': propertyProvider.currentFilter == 'For sale',
+              },
+              {
+                'label': 'Shared',
+                'selected': propertyProvider.currentFilter == 'Shared',
+              },
             ];
 
             return RefreshIndicator(
@@ -106,11 +118,7 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
           padding: const EdgeInsets.all(32.0),
           child: Column(
             children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red[300],
-              ),
+              Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
               const SizedBox(height: 16),
               Text(
                 'Error loading properties',
@@ -124,10 +132,7 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
               Text(
                 propertyProvider.error!,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.red[600],
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.red[600], fontSize: 14),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -146,11 +151,7 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
           padding: const EdgeInsets.all(32.0),
           child: Column(
             children: [
-              Icon(
-                Icons.home_outlined,
-                size: 64,
-                color: Colors.grey[400],
-              ),
+              Icon(Icons.home_outlined, size: 64, color: Colors.grey[400]),
               const SizedBox(height: 16),
               Text(
                 'No properties found',
@@ -163,10 +164,7 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
               const SizedBox(height: 8),
               Text(
                 'Try adjusting your search or filters',
-                style: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey[500], fontSize: 14),
               ),
             ],
           ),
@@ -182,17 +180,20 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
           _buildFeaturedProperties(propertyProvider.featuredProperties),
           const SizedBox(height: 28),
         ],
-        
+
         // All properties
-        _buildPropertiesSection('All Properties', propertyProvider.filteredProperties),
-        
+        _buildPropertiesSection(
+          'All Properties',
+          propertyProvider.filteredProperties,
+        ),
+
         // Loading more indicator
         if (propertyProvider.isLoadingMore)
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Center(child: CircularProgressIndicator()),
           ),
-        
+
         const SizedBox(height: 32),
       ],
     );
@@ -204,11 +205,7 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
       children: [
         Row(
           children: [
-            Icon(
-              Icons.apartment,
-              color: AppColors.primaryPurple,
-              size: 32,
-            ),
+            Icon(Icons.apartment, color: AppColors.primaryPurple, size: 32),
             const SizedBox(width: 8),
             Text(
               'HabiShare',
@@ -222,31 +219,25 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
           ],
         ),
         PopupMenuButton<String>(
-          icon: Icon(
-            Icons.menu,
-            color: AppColors.primaryPurple,
-            size: 28,
-          ),
+          icon: Icon(Icons.menu, color: AppColors.primaryPurple, size: 28),
           onSelected: (value) {
             if (value == 'logout') {
               _showLogoutDialog(context);
             }
           },
-          itemBuilder: (BuildContext context) => [
-            const PopupMenuItem<String>(
-              value: 'logout',
-              child: Row(
-                children: [
-                  Icon(Icons.logout, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text(
-                    'Logout',
-                    style: TextStyle(color: Colors.red),
+          itemBuilder:
+              (BuildContext context) => [
+                const PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text('Logout', style: TextStyle(color: Colors.red)),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ],
+                ),
+              ],
         ),
       ],
     );
@@ -268,22 +259,26 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
     );
   }
 
-  Widget _buildFilterChips(List<Map<String, dynamic>> filters, PropertyProvider propertyProvider) {
+  Widget _buildFilterChips(
+    List<Map<String, dynamic>> filters,
+    PropertyProvider propertyProvider,
+  ) {
     return SizedBox(
       height: 40,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        children: filters
-            .map(
-              (filter) => FilterChipWidget(
-                label: filter['label'] as String,
-                selected: filter['selected'] as bool,
-                onTap: () {
-                  propertyProvider.setFilter(filter['label'] as String);
-                },
-              ),
-            )
-            .toList(),
+        children:
+            filters
+                .map(
+                  (filter) => FilterChipWidget(
+                    label: filter['label'] as String,
+                    selected: filter['selected'] as bool,
+                    onTap: () {
+                      propertyProvider.setFilter(filter['label'] as String);
+                    },
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -305,15 +300,16 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
         ),
         // List layout for featured properties (one per row)
         Column(
-          children: featuredProperties
-              .take(2)
-              .map(
-                (property) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
-                  child: PropertyCard(property: property),
-                ),
-              )
-              .toList(),
+          children:
+              featuredProperties
+                  .take(2)
+                  .map(
+                    (property) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: PropertyCard(property: property),
+                    ),
+                  )
+                  .toList(),
         ),
       ],
     );
