@@ -59,12 +59,17 @@ class PropertyService {
       final querySnapshot = await _firestore
           .collection('properties')
           .where('ownerId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
           .get();
 
-      return querySnapshot.docs
+      // Sort locally after fetching to avoid composite index requirement
+      final properties = querySnapshot.docs
           .map((doc) => Property.fromMap({...doc.data(), 'id': doc.id}))
           .toList();
+      
+      // Sort by createdAt descending (newest first)
+      properties.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      
+      return properties;
     } catch (e) {
       print('Error getting user properties: $e');
       rethrow;
