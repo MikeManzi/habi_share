@@ -217,6 +217,32 @@ class PropertyProvider extends ChangeNotifier {
     }
   }
 
+  // Delete property
+  Future<bool> deleteProperty(String propertyId) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      // Delete from Firebase
+      await _propertyService.deleteProperty(propertyId);
+
+      // Remove from local lists if present
+      _allProperties.removeWhere((p) => p.id == propertyId);
+      _filteredProperties.removeWhere((p) => p.id == propertyId);
+
+      print('PropertyProvider: Property deleted successfully');
+      return true;
+    } catch (e) {
+      _error = 'Error deleting property: ${e.toString()}';
+      print(_error);
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   void clearError() {
     _error = null;
     notifyListeners();

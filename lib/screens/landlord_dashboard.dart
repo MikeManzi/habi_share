@@ -175,7 +175,14 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
         final property = userProperties[index];
         return Column(
           children: [
-            PropertyCard(property: property),
+            PropertyCard(
+              property: property,
+              showDeleteOption: true,
+              onDeleted: () {
+                // Refresh the properties list after deletion
+                _loadUserProperties();
+              },
+            ),
             if (index < userProperties.length - 1)
               const Divider(
                 height: 32,
