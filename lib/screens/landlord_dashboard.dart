@@ -7,8 +7,6 @@ import '../models/notification.dart';
 import '../widgets/property_card.dart';
 import '../widgets/notification_popover.dart';
 import 'property_upload_flow.dart';
-import 'package:habi_share/providers/auth_provider.dart';
-import 'package:provider/provider.dart';
 
 class LandlordDashboard extends StatefulWidget {
   const LandlordDashboard({super.key});

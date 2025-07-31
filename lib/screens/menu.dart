@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habi_share/providers/auth_provider.dart';
 import 'package:habi_share/screens/profile_settings.dart';
-import 'package:habi_share/utils/app_colors.dart';
 import 'package:provider/provider.dart';
 
 class MenuPage extends StatelessWidget {
@@ -25,7 +24,7 @@ class MenuPage extends StatelessWidget {
                     onTap: () => Navigator.pop(context),
                     child: const Icon(
                       Icons.close,
-                      color: Color(0xFF8B4B8C),
+                      color:   Color(0xFF8A2851),
                       size: 24,
                     ),
                   ),
@@ -43,7 +42,7 @@ class MenuPage extends StatelessWidget {
                       width: 60,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF8B4B8C),
+                        color:  const Color(0xFF8A2851),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Icon(
@@ -96,10 +95,10 @@ class MenuPage extends StatelessWidget {
                 onPressed: () {
                   _showLogoutDialog(context);
                 },
-                icon: const Icon(Icons.logout, color: AppColors.primaryPurple),
+                icon: const Icon(Icons.logout, color: const Color(0xFF8A2851)),
                 label: const Text(
                   'Logout',
-                  style: TextStyle(color: AppColors.primaryPurple),
+                  style: TextStyle(color: Colors.black),
                 ),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
@@ -127,7 +126,7 @@ class MenuPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            Icon(icon, color: const Color(0xFF8B4B8C), size: 24),
+            Icon(icon, color:   const Color(0xFF8A2851), size: 24),
             const SizedBox(width: 16),
             Text(
               title,

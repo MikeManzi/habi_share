@@ -253,7 +253,6 @@ class AuthProvider with ChangeNotifier {
     
     return null;
   } on auth.FirebaseAuthException catch (e) {
-    String errorMessage;
     switch (e.code) {
       case 'requires-recent-login':
         throw Exception('Please log out and log back in to update your profile');
