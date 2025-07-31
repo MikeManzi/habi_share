@@ -17,6 +17,7 @@ class Property {
   final List<String> images;
   final String type;
   final List<String> tags;
+  final String? rentalPrice;
   final String ownerId; // Added ownerId field
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -47,6 +48,7 @@ class Property {
     required this.updatedAt,
     this.status = 'pending',
     this.isFavorite = false,
+    this.rentalPrice
   });
 
   factory Property.fromMap(Map<String, dynamic> map) => Property(
@@ -126,6 +128,7 @@ class Property {
     DateTime? updatedAt,
     String? status,
     bool? isFavorite,
+    String? rentalPrice
   }) {
     return Property(
       id: id,
