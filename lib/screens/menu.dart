@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:habi_share/providers/auth_provider.dart';
 import 'package:habi_share/screens/profile_settings.dart';
+import 'package:habi_share/utils/app_colors.dart';
+import 'package:provider/provider.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -28,14 +31,14 @@ class MenuPage extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 40),
+
               
-              // HabiShare Logo and Title
               Center(
                 child: Column(
                   children: [
-                    // Logo placeholder (building icon)
+                    
                     Container(
                       width: 60,
                       height: 40,
@@ -61,41 +64,50 @@ class MenuPage extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 80),
+
               
-              // Menu Items
               _buildMenuItem(
                 icon: Icons.dashboard_outlined,
                 title: 'Dashboard',
                 onTap: () {
-                  // Handle dashboard navigation
                   Navigator.pop(context);
                 },
               ),
-              
+
               const SizedBox(height: 30),
-              
+
               _buildMenuItem(
                 icon: Icons.person_outline,
                 title: 'Profile Settings',
                 onTap: () {
-                  // Handle profile settings navigation
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileSettingsPage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileSettingsPage(),
+                    ),
+                  );
                 },
               ),
-              
+
               const Spacer(),
-              
-              // Log Out Button
-              _buildMenuItem(
-                icon: Icons.logout,
-                title: 'Log Out',
-                onTap: () {
-                  // Handle log out
+              TextButton.icon(
+                onPressed: () {
+                  _showLogoutDialog(context);
                 },
+                icon: const Icon(Icons.logout, color: AppColors.primaryPurple),
+                label: const Text(
+                  'Logout',
+                  style: TextStyle(color: AppColors.primaryPurple),
+                ),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                ),
               ),
-              
               const SizedBox(height: 40),
             ],
           ),
@@ -115,11 +127,7 @@ class MenuPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            Icon(
-              icon,
-              color: const Color(0xFF8B4B8C),
-              size: 24,
-            ),
+            Icon(icon, color: const Color(0xFF8B4B8C), size: 24),
             const SizedBox(width: 16),
             Text(
               title,
@@ -135,4 +143,34 @@ class MenuPage extends StatelessWidget {
     );
   }
 
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Provider.of<AuthProvider>(context, listen: false).signOut();
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/',
+                  (route) => false,
+                );
+              },
+
+              child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

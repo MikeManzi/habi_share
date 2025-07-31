@@ -57,32 +57,21 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
               fontSize: 20,
             ),
           ),
-          actions: [
+           actions: [
             IconButton(
               icon: const Icon(Icons.notifications_none, color: Colors.black),
               onPressed:
                   () => setState(() => showNotifications = !showNotifications),
             ),
-            PopupMenuButton<String>(
+            IconButton(
               icon: const Icon(Icons.menu, color: AppColors.primaryPurple),
-              onSelected: (value) {
-                if (value == 'logout') {
-                  _showLogoutDialog(context);
-                }
+              onPressed: (){
+                //open the menupage
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MenuPage()),
+                );
               },
-              itemBuilder:
-                  (BuildContext context) => [
-                    const PopupMenuItem<String>(
-                      value: 'logout',
-                      child: Row(
-                        children: [
-                          Icon(Icons.logout, color: Colors.red),
-                          SizedBox(width: 8),
-                          Text('Logout', style: TextStyle(color: Colors.red)),
-                        ],
-                      ),
-                    ),
-                  ],
             ),
           ],
           bottom: PreferredSize(
@@ -214,28 +203,5 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Logout'),
-          content: const Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Provider.of<AuthProvider>(context, listen: false).signOut();
-              },
-              child: const Text('Logout', style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  
 }
