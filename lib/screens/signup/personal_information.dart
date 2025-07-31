@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:habi_share/screens/signup/account_information.dart';
 import 'package:habi_share/widgets/custom_button.dart';
 import 'package:habi_share/widgets/text_field.dart';
+import 'package:habi_share/models/user.dart';
 
 class PersonalInformation extends StatefulWidget {
-  const PersonalInformation({super.key});
+  final UserRole role;
+
+  const PersonalInformation({super.key, required this.role});
 
   @override
   State<PersonalInformation> createState() => _PersonalInformationState();
@@ -112,6 +115,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
                   lastName: _lastNameController.text,
                   telephone: _telephoneController.text,
                   email: _emailController.text,
+                  role: widget.role,
                 ),
           ),
         );

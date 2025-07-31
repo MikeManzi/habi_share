@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/property_provider.dart';
 import '../../components/reusable_components.dart';
-import '../../utils/app_colors.dart';
 
 class PropertyInformationStep extends StatefulWidget {
   final VoidCallback onNext;
@@ -15,6 +14,7 @@ class PropertyInformationStep extends StatefulWidget {
 }
 
 class _PropertyInformationStepState extends State<PropertyInformationStep> {
+  final _nameController = TextEditingController();
   final _addressController = TextEditingController();
   final _typeController = TextEditingController();
   final _sizeController = TextEditingController();
@@ -29,8 +29,9 @@ class _PropertyInformationStepState extends State<PropertyInformationStep> {
   void initState() {
     super.initState();
     final provider = Provider.of<PropertyProvider>(context, listen: false);
+    _nameController.text = provider.property.name;
     _addressController.text = provider.property.address ?? '';
-    _typeController.text = provider.property.type ?? '';
+    _typeController.text = provider.property.type;
     _sizeController.text = provider.property.size.toString();
     _roomsController.text = provider.property.numberOfRooms.toString();
     _isPetFriendly = provider.property.tags.contains('Pet Friendly');
@@ -41,6 +42,7 @@ class _PropertyInformationStepState extends State<PropertyInformationStep> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _addressController.dispose();
     _typeController.dispose();
     _sizeController.dispose();
@@ -49,21 +51,38 @@ class _PropertyInformationStepState extends State<PropertyInformationStep> {
   }
 
   void _saveAndNext() {
+    print('_saveAndNext called');
+    print('Form validation result: $_isFormValid');
+    print('Name: ${_nameController.text}');
+    print('Address: ${_addressController.text}');
+    print('Type: ${_typeController.text}');
+    print('Size: ${_sizeController.text}');
+    print('Rooms: ${_roomsController.text}');
+    
     final provider = Provider.of<PropertyProvider>(context, listen: false);
     provider.updateProperty(
       provider.property.copyWith(
+        name: _nameController.text,
         address: _addressController.text,
-        typeOfProperty: _typeController.text,
+        type: _typeController.text,
         size: _sizeController.text,
         numberOfRooms: int.tryParse(_roomsController.text) ?? 0,
-        tags: [_isPetFriendly? 'Pet Friendly': '',_hasCarParking? 'Car Parking': '', _hasGarden? 'Garden': '', _isSharedHousing? 'Shared Housing': '', ].where((tag) => tag.isNotEmpty).toList(),
+        tags: [
+          if (_isPetFriendly) 'Pet Friendly',
+          if (_hasCarParking) 'Car Parking',
+          if (_hasGarden) 'Garden',
+          if (_isSharedHousing) 'Shared Housing',
+        ],
       ),
     );
+    print('Property updated, calling onNext');
     widget.onNext();
+    print('onNext called');
   }
 
   bool get _isFormValid {
-    return _addressController.text.isNotEmpty &&
+    return _nameController.text.isNotEmpty &&
+        _addressController.text.isNotEmpty &&
         _typeController.text.isNotEmpty &&
         _sizeController.text.isNotEmpty &&
         _roomsController.text.isNotEmpty;
@@ -98,6 +117,13 @@ class _PropertyInformationStepState extends State<PropertyInformationStep> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    CustomTextField(
+                      hintText: 'Property Name',
+                      controller: _nameController,
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 16),
+
                     CustomTextField(
                       hintText: 'Address',
                       controller: _addressController,

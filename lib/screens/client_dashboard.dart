@@ -5,10 +5,17 @@ import '../widgets/client_property_grid.dart';
 import '../widgets/filter_chip.dart';
 import '../widgets/search_bar.dart' as custom_widgets;
 import '../models/client_property.dart';
+import 'package:habi_share/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
-class ClientDashboardScreen extends StatelessWidget {
+class ClientDashboardScreen extends StatefulWidget {
   const ClientDashboardScreen({Key? key}) : super(key: key);
 
+  @override
+  State<ClientDashboardScreen> createState() => _ClientDashboardScreenState();
+}
+
+class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     // Sample property data
@@ -82,7 +89,34 @@ class ClientDashboardScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Icon(Icons.menu, color: AppColors.primaryPurple, size: 28),
+                    PopupMenuButton<String>(
+                      icon: Icon(
+                        Icons.menu,
+                        color: AppColors.primaryPurple,
+                        size: 28,
+                      ),
+                      onSelected: (value) {
+                        if (value == 'logout') {
+                          _showLogoutDialog(context);
+                        }
+                      },
+                      itemBuilder:
+                          (BuildContext context) => [
+                            const PopupMenuItem<String>(
+                              value: 'logout',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.logout, color: Colors.red),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Logout',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -155,6 +189,31 @@ class ClientDashboardScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Provider.of<AuthProvider>(context, listen: false).signOut();
+              },
+              child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
     );
   }
 }

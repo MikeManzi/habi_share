@@ -18,6 +18,10 @@ class Property {
   final String type;
   final List<String> tags;
   final String? rentalPrice;
+  final String ownerId; // Added ownerId field
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String status; // e.g., 'pending', 'approved', 'rejected'
   bool isFavorite;
 
   Property({
@@ -39,6 +43,10 @@ class Property {
     required this.images,
     required this.type,
     required this.tags,
+    required this.ownerId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.status = 'pending',
     this.isFavorite = false,
     this.rentalPrice
   });
@@ -54,25 +62,54 @@ class Property {
     priceSpan: map['priceSpan'],
     priceDescription: map['priceDescription'],
     documents: List<String>.from(map['documents'] ?? []),
-    size: double.tryParse(map['size'] ?? '0.0') ?? 0.0,
-    numberOfRooms: int.tryParse(map['normalRooms'] ?? '0') ?? 0,
+    size: double.tryParse(map['size']?.toString() ?? '0.0') ?? 0.0,
+    numberOfRooms: int.tryParse(map['numberOfRooms']?.toString() ?? '0') ?? 0,
     lastActivity: map['lastActivity'] ?? '',
-    images: List<String>.from(map['images']?.split(',') ?? []),
+    images: List<String>.from(map['images'] ?? []),
     type: map['type'] ?? '',
-    tags: List<String>.from(map['tags']?.split(',') ?? []),
-    isFavorite: map['isFavorite'] == 'true',
+    tags: List<String>.from(map['tags'] ?? []),
+    ownerId: map['ownerId'] ?? '',
+    createdAt: DateTime.tryParse(map['createdAt']?.toString() ?? '') ?? DateTime.now(),
+    updatedAt: DateTime.tryParse(map['updatedAt']?.toString() ?? '') ?? DateTime.now(),
+    status: map['status'] ?? 'pending',
+    isFavorite: map['isFavorite'] == true,
     description: map['description'] ?? '',
-    price: double.tryParse(map['price'] ?? '0.0') ?? 0.0,
+    price: double.tryParse(map['price']?.toString() ?? '0.0') ?? 0.0,
   );
 
-
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'address': address,
+      'phone': phone,
+      'email': email,
+      'tinNumber': tinNumber,
+      'businessCode': businessCode,
+      'priceSpan': priceSpan,
+      'priceDescription': priceDescription,
+      'documents': documents,
+      'size': size,
+      'numberOfRooms': numberOfRooms,
+      'lastActivity': lastActivity,
+      'images': images,
+      'type': type,
+      'tags': tags,
+      'ownerId': ownerId,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'status': status,
+      'isFavorite': isFavorite,
+      'description': description,
+      'price': price,
+    };
+  }
 
   Property copyWith({
     String? name,
     String? address,
     String? phone,
     String? email,
-    String? typeOfProperty,
     String? size,
     String? description,
     String? tinNumber,
@@ -86,6 +123,10 @@ class Property {
     List<String>? images,
     String? type,
     List<String>? tags,
+    String? ownerId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? status,
     bool? isFavorite,
     String? rentalPrice
   }) {
@@ -103,13 +144,16 @@ class Property {
       documents: documents ?? this.documents,
       lastActivity: lastActivity ?? this.lastActivity,
       size: size != null ? double.parse(size) : this.size,
-      numberOfRooms: numberOfRooms?? this.numberOfRooms,
+      numberOfRooms: numberOfRooms ?? this.numberOfRooms,
       price: price ?? this.price,
       images: images ?? this.images,
       type: type ?? this.type,
       tags: tags ?? this.tags,
+      ownerId: ownerId ?? this.ownerId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? DateTime.now(),
+      status: status ?? this.status,
       isFavorite: isFavorite ?? this.isFavorite,
-
     );
   }
 

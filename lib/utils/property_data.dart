@@ -26,9 +26,11 @@ class PropertyData {
       businessCode: '123456789',
       priceSpan: 'Monthly',
       priceDescription: 'Includes electricity, water, and gas.',
-      documents: [
-      ]
-      
+      documents: [],
+      ownerId: 'sample_owner_1',
+      createdAt: DateTime(2023, 8, 20),
+      updatedAt: DateTime(2023, 8, 20),
+      status: 'approved',
     ),
     Property(
       id:'2',
@@ -49,6 +51,10 @@ class PropertyData {
       lastActivity: '2023-08-20',
       phone: '0771234567',
       email: 'Kg5Y7@example.com',
+      ownerId: 'sample_owner_2',
+      createdAt: DateTime(2023, 8, 20),
+      updatedAt: DateTime(2023, 8, 20),
+      status: 'approved',
     ),
     Property(
       id: '3',
@@ -69,6 +75,10 @@ class PropertyData {
       lastActivity: '2023-08-20',
       phone: '0771234567',
       email: 'Kg5Y7@example.com',
+      ownerId: 'sample_owner_3',
+      createdAt: DateTime(2023, 8, 20),
+      updatedAt: DateTime(2023, 8, 20),
+      status: 'approved',
     ),
   ];
 

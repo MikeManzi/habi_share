@@ -34,10 +34,16 @@ class _PropertyUploadFlowState extends State<PropertyUploadFlow> {
   }
 
   void _goToNextStep() {
+    print('_goToNextStep called');
     final provider = Provider.of<PropertyProvider>(context, listen: false);
+    print('Current step: ${provider.currentStep}');
     if (provider.currentStep < 4) {
       provider.nextStep();
+      print('Moving to step: ${provider.currentStep}');
       _navigateToStep(provider.currentStep);
+      print('Navigation completed');
+    } else {
+      print('Already at last step');
     }
   }
 
