@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:habi_share/screens/signup/personal_information.dart';
 import 'package:habi_share/widgets/text_field.dart';
 import '../widgets/custom_button.dart';
 import 'package:habi_share/screens/landlord_dashboard.dart';
+import 'package:habi_share/screens/client_dashboard.dart';
+import 'package:habi_share/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -13,14 +15,14 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  final _telephoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _telephoneController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -31,57 +33,84 @@ class _LoginState extends State<Login> {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      setState(() {
-        _isLoading = false;
-      });
+        // Login with email and password
+        final success = await authProvider.signInWithEmail(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
 
-      // Handle login logic here
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successful!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LandlordDashboard()),
-        );
+        if (mounted) {
+          if (success) {
+            final user = authProvider.user;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Welcome back ${user?.firstName}!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            // Navigate based on user role
+            if (user?.isOwner == true) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LandlordDashboard(),
+                ),
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ClientDashboardScreen(),
+                ),
+              );
+            }
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(authProvider.error ?? 'Login failed'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login error: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
 
   void _handleRegister() {
-    // Navigate to signup page
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PersonalInformation()),
-    );
+    // Navigate back to home page to choose role
+    Navigator.pop(context);
   }
 
-  String? _validateTelephone(String? value) {
+  String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your telephone number';
+      return 'Please enter your email address';
     }
 
-    // Remove any spaces, dashes, or parentheses
-    String cleanedValue = value.replaceAll(RegExp(r'[\s\-\(\)]'), '');
-
-    // Check if it contains only digits after cleaning
-    if (!RegExp(r'^[0-9]+$').hasMatch(cleanedValue)) {
-      return 'Please enter a valid telephone number';
-    }
-
-    // Check length (adjust based on your country's phone number format)
-    if (cleanedValue.length < 10) {
-      return 'Telephone number must be at least 10 digits';
-    }
-
-    if (cleanedValue.length > 15) {
-      return 'Telephone number cannot exceed 15 digits';
+    // Basic email validation
+    if (!RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(value)) {
+      return 'Please enter a valid email address';
     }
 
     return null;
@@ -222,13 +251,13 @@ class _LoginState extends State<Login> {
 
                     const SizedBox(height: 40),
 
-                    // Telephone input - ENHANCED VALIDATION
+                    // Email input
                     CustomTextField(
-                      hintText: 'Telephone',
-                      controller: _telephoneController,
-                      keyboardType: TextInputType.phone,
-                      validator: _validateTelephone,
-                      prefixIcon: const Icon(Icons.phone, color: Colors.grey),
+                      hintText: 'Email',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: _validateEmail,
+                      prefixIcon: const Icon(Icons.email, color: Colors.grey),
                     ),
 
                     // Password input - ENHANCED VALIDATION

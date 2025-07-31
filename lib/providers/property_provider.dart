@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import '../models/property.dart';
+import '../services/property_service.dart';
 
 class PropertyProvider extends ChangeNotifier {
+  final PropertyService _propertyService = PropertyService();
+  
   Property _property = Property(
-    id:'',
+    id: '',
     name: '',
     phone: '',
     email: '',
@@ -19,15 +22,22 @@ class PropertyProvider extends ChangeNotifier {
     description: '',
     tinNumber: '',
     businessCode: '',
-    priceSpan: '',
+    priceSpan: 'Monthly',
     priceDescription: '',
     price: 0.0,
-
+    ownerId: '',
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+    status: 'pending',
   );
   int _currentStep = 0;
+  bool _isLoading = false;
+  String? _error;
 
   Property get property => _property;
   int get currentStep => _currentStep;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
 
   void updateProperty(Property newProperty) {
     _property = newProperty;
@@ -71,11 +81,17 @@ class PropertyProvider extends ChangeNotifier {
       description: '',
       tinNumber: '',
       businessCode: '',
-      priceSpan: '',
+      priceSpan: 'Monthly',
       priceDescription: '',
       price: 0.0,
+      ownerId: '',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      status: 'pending',
     );
     _currentStep = 0;
+    _isLoading = false;
+    _error = null;
     notifyListeners();
   }
 
@@ -105,5 +121,64 @@ class PropertyProvider extends ChangeNotifier {
 
   void removeImage(String imagePath) {
     updateImage('');
+  }
+
+  // Submit property to Firebase
+  Future<bool> submitProperty() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      // Validate required fields
+      if (_property.name.isEmpty || 
+          _property.address?.isEmpty == true ||
+          _property.description.isEmpty ||
+          _property.price <= 0) {
+        _error = 'Please fill in all required fields';
+        return false;
+      }
+
+      // Submit to Firebase
+      final propertyId = await _propertyService.createProperty(_property);
+      
+      if (propertyId != null) {
+        _property.id = propertyId;
+        return true;
+      }
+      
+      _error = 'Failed to submit property';
+      return false;
+    } catch (e) {
+      _error = 'Error submitting property: ${e.toString()}';
+      print(_error);
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Get user's properties
+  Future<List<Property>> getUserProperties() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      return await _propertyService.getUserProperties();
+    } catch (e) {
+      _error = 'Error loading properties: ${e.toString()}';
+      print(_error);
+      return [];
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void clearError() {
+    _error = null;
+    notifyListeners();
   }
 }
