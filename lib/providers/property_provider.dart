@@ -177,6 +177,25 @@ class PropertyProvider extends ChangeNotifier {
     }
   }
 
+ Future<Property?> getPropertyById(String propertyId) async {
+  try {
+    Property? property = await _propertyService.getPropertyById(propertyId);
+    // if(property == null){
+    //   throw Exception('Property not found');
+    // }
+    // if(property != null && property.images.isEmpty){
+    //   // Add default property image path
+    //   print("Got the property");
+    //   property.images.add('assets/default_property.png');
+    // }
+    return property;
+  } catch (e) {
+    print('Error getting property by ID: $e');
+    return null;
+  }
+}
+
+
   void clearError() {
     _error = null;
     notifyListeners();
