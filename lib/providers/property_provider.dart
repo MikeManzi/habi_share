@@ -61,8 +61,9 @@ class PropertyProvider extends ChangeNotifier {
   String get currentFilter => _currentFilter;
   String get searchQuery => _searchQuery;
 
-  void updateProperty(Property newProperty) {
+  void updateProperty(Property newProperty) async {
     _property = newProperty;
+    await _propertyService.updateProperty(_property);
     notifyListeners();
   }
 
@@ -117,10 +118,12 @@ class PropertyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateImage(String imagePath) {
+  void updateImage(String imagePath) async{
     _property = _property.copyWith(images: [imagePath]);
+     await _propertyService.updateProperty(_property);
     notifyListeners();
   }
+  
 
   void addDocument(String documentPath) {
     final currentDocuments = List<String>.from(_property.documents);
@@ -198,6 +201,23 @@ class PropertyProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+ Future<Property?> getPropertyById(String propertyId) async {
+  try {
+    Property? property = await _propertyService.getPropertyById(propertyId);
+    if(property == null){
+      throw Exception('Property not found');
+    }
+    if(property != null && property.images.isEmpty){
+      property.images.add('assets/default_property.png');
+    }
+    return property;
+  } catch (e) {
+    print('Error getting property by ID: $e');
+    return null;
+  }
+}
+
 
   void clearError() {
     _error = null;

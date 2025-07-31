@@ -20,7 +20,7 @@ class PropertyCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                PropertyDetailsScreen(propertyId: property.id),
+                PropertyDetailsScreen(propertyId: "HMke3XwtdN2alGC5Btzo"),
           ),
         );
       },
