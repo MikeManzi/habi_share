@@ -299,10 +299,22 @@ class PropertyService {
   // Delete property
   Future<void> deleteProperty(String propertyId) async {
     try {
+      print('PropertyService: Attempting to delete property with ID: $propertyId');
       await _firestore.collection('properties').doc(propertyId).delete();
+      print('PropertyService: Property deleted successfully from Firebase');
     } catch (e) {
-      print('Error deleting property: $e');
-      rethrow;
+      print('PropertyService: Error deleting property: $e');
+      
+      // Provide more specific error messages
+      if (e.toString().contains('PERMISSION_DENIED')) {
+        throw Exception('Permission denied. You can only delete your own properties.');
+      } else if (e.toString().contains('NOT_FOUND')) {
+        throw Exception('Property not found. It may have already been deleted.');
+      } else if (e.toString().contains('UNAVAILABLE')) {
+        throw Exception('Service temporarily unavailable. Please try again later.');
+      } else {
+        throw Exception('Failed to delete property: ${e.toString()}');
+      }
     }
   }
 

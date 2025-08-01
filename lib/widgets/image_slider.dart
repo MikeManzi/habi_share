@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habi_share/utils/app_colors.dart';
+import '../utils/image_utils.dart';
 
 class ImageSlider extends StatefulWidget {
   final List<String> images;
@@ -35,6 +36,11 @@ class _ImageSliderState extends State<ImageSlider> {
 
   @override
   Widget build(BuildContext context) {
+    // Handle empty images list
+    List<String> displayImages = widget.images.isNotEmpty 
+        ? widget.images 
+        : ['assets/default_property.png'];
+
     return Stack(
       children: [
         SizedBox(
@@ -46,15 +52,15 @@ class _ImageSliderState extends State<ImageSlider> {
                 _currentIndex = index;
               });
             },
-            itemCount: widget.images.length,
+            itemCount: displayImages.length,
             itemBuilder: (context, index) {
+              final imagePath = displayImages[index];
+              
               return Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(
-                      widget.images[index],
-                    ), // You'll need to add this image
-                    fit: BoxFit.contain,
+                    image: ImageUtils.getImageProvider(imagePath),
+                    fit: BoxFit.cover,
                   ),
                 ),
               );
@@ -100,15 +106,16 @@ class _ImageSliderState extends State<ImageSlider> {
           ),
         ),
         // Page indicators
-        Positioned(
-          bottom: 16,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              widget.images.length,
-              (index) => Container(
+        if (displayImages.length > 1)
+          Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                displayImages.length,
+                (index) => Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 width: 8,
                 height: 8,
